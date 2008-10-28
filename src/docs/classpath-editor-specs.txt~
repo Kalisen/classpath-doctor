@@ -1,0 +1,16 @@
+edit classpath widget
+
+features
+	support env variable resolution
+		display value in tooltip
+	autodetect + configurable windows / unix path separator
+	add / remove entries
+	detect duplicates
+	detect potential conflicts
+		same library name in different location
+		same library name but different version
+		
+optional features
+	picture customization
+	connect to running process
+	
