@@ -6,7 +6,7 @@ import java.io.File;
 public class ClassPathParser {
 
     private String pathSeparator = null;
-    private VariableResolver variableResolver = null;
+    private AbstractVariableResolver abstractVariableResolver = null;
 
     public ClassPathParser() {
         // default constructor
@@ -57,18 +57,18 @@ public class ClassPathParser {
         this.pathSeparator = pathSeparator;
     }
 
-    public VariableResolver getResolver() {
-        if (this.variableResolver == null) {
-            this.variableResolver = new VariableResolver();
+    public AbstractVariableResolver getResolver() {
+        if (this.abstractVariableResolver == null) {
+            this.abstractVariableResolver = new AbstractVariableResolver();
         }
-        return this.variableResolver;
+        return this.abstractVariableResolver;
     }
 
-    public void setResolver(VariableResolver variableResolver) {
-        if (variableResolver == null) {
+    public void setResolver(AbstractVariableResolver abstractVariableResolver) {
+        if (abstractVariableResolver == null) {
             throw new IllegalArgumentException("Null is not a valid argument");
         }
-        this.variableResolver = variableResolver;
+        this.abstractVariableResolver = abstractVariableResolver;
     }
 
 }

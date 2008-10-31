@@ -18,11 +18,12 @@ public class PathResolver {
         if (path == null) {
             result = new InvalidPathEntry(path, "null is not a valid path");
         } else {
+            String expandedPath = getVariableResolver().resolve(path);
             try {
-                URL url = new URL(path);
+                URL url = new URL(expandedPath);
                 result = new URLPath(url);
             } catch (MalformedURLException e) {
-                File f = new File(path);
+                File f = new File(expandedPath);
                 if (f.isDirectory()) {
                     result = new DirectoryPath(f);
                 } else if (f.isFile()) {
@@ -35,9 +36,20 @@ public class PathResolver {
 
     public VariableResolver getVariableResolver() {
         if (this.varResolver == null) {
-            this.varResolver = new VariableResolver();
+            this.varResolver = buildVariableResolver();
         }
         return this.varResolver;
+    }
+
+    private VariableResolver buildVariableResolver() {
+        VariableResolver resolver = null;
+        String pathSeparator = System.getProperty("path.separator");
+        if (":".equals(pathSeparator)) {
+            resolver = new UnixVariableResolver();
+        } else {
+            resolver = new WindowsVariableResolver();
+        }
+        return resolver;
     }
 
     public void setVariableResolver(VariableResolver varResolver) {

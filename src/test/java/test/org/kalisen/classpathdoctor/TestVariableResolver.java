@@ -6,7 +6,7 @@ import static org.testng.Assert.assertSame;
 import mockit.Mockit;
 
 import org.kalisen.classpathdoctor.Environment;
-import org.kalisen.classpathdoctor.VariableResolver;
+import org.kalisen.classpathdoctor.AbstractVariableResolver;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
 
@@ -17,7 +17,7 @@ public class TestVariableResolver {
 
     @Test
     public void resolve() {
-        VariableResolver r = new VariableResolver();
+        AbstractVariableResolver r = new AbstractVariableResolver();
         Mockit.redefineMethods(Environment.class, MockEnvironment.class);
         String value = r.resolve(VAR_NAME);
         assertEquals(value, VAR_VALUE);
@@ -25,7 +25,7 @@ public class TestVariableResolver {
 
     @Test
     public void testEnvironmentSetterAndGetter() {
-        VariableResolver r = new VariableResolver();
+        AbstractVariableResolver r = new AbstractVariableResolver();
         Environment env = new Environment();
         r.setEnvironment(env);
         assertSame(r.getEnvironment(), env);
@@ -33,7 +33,7 @@ public class TestVariableResolver {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void passingNullToSetEnvironmentShouldThrowAnInvalidArgumentException() {
-        VariableResolver r = new VariableResolver();
+        AbstractVariableResolver r = new AbstractVariableResolver();
         r.setEnvironment(null);
     }
 
