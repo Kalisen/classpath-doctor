@@ -1,6 +1,7 @@
 
 package org.kalisen.classpathdoctor;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class AbstractVariableResolver implements VariableResolver {
@@ -12,7 +13,17 @@ public abstract class AbstractVariableResolver implements VariableResolver {
     }
 
     public String resolve(String path) {
-        return getEnvironment().getValue(path);
+        String result = null;
+        Pattern p = getVariablePattern();
+        Matcher m = p.matcher(path);
+        String var = null;
+        String varValue = null;
+        while (m.find()) {
+            var = m.group();
+            varValue = resolve(getEnvironment().getValue(var));
+            result = path.replaceAll(var, varValue);
+        }
+        return result;
     }
 
     public Environment getEnvironment() {

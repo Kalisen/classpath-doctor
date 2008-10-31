@@ -18,8 +18,9 @@ public class PathResolver {
         if (path == null) {
             result = new InvalidPathEntry(path, "null is not a valid path");
         } else {
-            String expandedPath = getVariableResolver().resolve(path);
+            String expandedPath = null;
             try {
+                expandedPath = getVariableResolver().resolve(path);
                 URL url = new URL(expandedPath);
                 result = new URLPath(url);
             } catch (MalformedURLException e) {
