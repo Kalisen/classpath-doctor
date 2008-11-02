@@ -1,12 +1,11 @@
 
 package org.kalisen.classpathdoctor;
 
-import java.io.File;
 
 public class ClassPathParser {
 
     private String pathSeparator = null;
-    private AbstractVariableResolver abstractVariableResolver = null;
+    private PathResolver pathResolver = null;
 
     public ClassPathParser() {
         // default constructor
@@ -21,24 +20,8 @@ public class ClassPathParser {
         if (stringClassPath != null) {
             String[] bits = stringClassPath.split(getPathSeparator());
             for (int i = 0; i < bits.length; i++) {
-                result.addEntry(buildPathEntry(bits[i]));
+                result.addEntry(getPathResolver().resolve(bits[i]));
             }
-        }
-        return result;
-    }
-
-    private PathEntry buildPathEntry(String path) {
-        PathEntry result = null;
-        if (path == null) {
-            result = new InvalidPathEntry(path);
-        }
-        File f = new File(path);
-        if (f.isFile()) {
-            result = new JarPath(f);
-        } else if (f.isDirectory()) {
-            result = new DirectoryPath(f);
-        } else {
-            result = new InvalidPathEntry(path);
         }
         return result;
     }
@@ -57,18 +40,20 @@ public class ClassPathParser {
         this.pathSeparator = pathSeparator;
     }
 
-    public AbstractVariableResolver getResolver() {
-        if (this.abstractVariableResolver == null) {
-            this.abstractVariableResolver = new AbstractVariableResolver();
+    public PathResolver getPathResolver() {
+        if (this.pathResolver == null) {
+            this.pathResolver = new PathResolver();
         }
-        return this.abstractVariableResolver;
+        return this.pathResolver;
     }
 
-    public void setResolver(AbstractVariableResolver abstractVariableResolver) {
-        if (abstractVariableResolver == null) {
-            throw new IllegalArgumentException("Null is not a valid argument");
+    public void setPathResolver(PathResolver pathResolver) {
+        if (pathResolver == null) {
+            throw new IllegalArgumentException("null is not a valid argument");
         }
-        this.abstractVariableResolver = abstractVariableResolver;
+        this.pathResolver = pathResolver;
     }
+    
+    
 
 }

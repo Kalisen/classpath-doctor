@@ -13,18 +13,23 @@ public abstract class AbstractVariableResolver implements VariableResolver {
     }
 
     public String resolve(String path) {
-        String result = null;
+        if (path == null) {
+            throw new IllegalArgumentException("null is not a valid argument");
+        }
+        String result = path;
         Pattern p = getVariablePattern();
         Matcher m = p.matcher(path);
         String var = null;
         String varValue = null;
         while (m.find()) {
             var = m.group();
-            varValue = resolve(getEnvironment().getValue(var));
+            varValue = resolve(getEnvironment().getValue(isolateVarName(var)));
             result = path.replaceAll(var, varValue);
         }
         return result;
     }
+
+    protected abstract String isolateVarName(String var);
 
     public Environment getEnvironment() {
         if (this.env == null) {
