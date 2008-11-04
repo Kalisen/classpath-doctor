@@ -3,6 +3,7 @@ package test.org.kalisen.classpathdoctor;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.fail;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -69,5 +70,10 @@ public class TestClassPathParser {
         assertEquals(iter.next().getPath(), "entry3"
                 + FILE_SEPARATOR + "subentry3");
         assertEquals(iter.next().getPath(), "entry4");
+    }
+
+    @Test
+    public void parsingValidClasspathStringUsingVariableShouldReturnNonEmptyClasspathAndSubstitueVariableValue() {
+        fail("not implemented");
     }
 }
