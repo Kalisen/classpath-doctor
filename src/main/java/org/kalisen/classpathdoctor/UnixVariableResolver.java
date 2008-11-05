@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 public class UnixVariableResolver extends AbstractVariableResolver {
 
-    public static final Pattern UNIX_VARIABLE = Pattern.compile("$\\{.*?\\}"); 
+    public static final Pattern UNIX_VARIABLE = Pattern.compile("\\$\\{.*?\\}"); 
 
     @Override
     protected Pattern getVariablePattern() {
@@ -13,8 +13,7 @@ public class UnixVariableResolver extends AbstractVariableResolver {
 
     @Override
     protected String isolateVarName(String var) {
-        // TODO Auto-generated method stub
-        return null;
+        return var.substring(2, var.length() -1);
     }
     
 }

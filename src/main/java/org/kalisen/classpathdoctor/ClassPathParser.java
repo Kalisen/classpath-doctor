@@ -17,7 +17,7 @@ public class ClassPathParser {
 
     public ClassPath parse(String stringClassPath) {
         ClassPath result = new ClassPath();
-        if (stringClassPath != null) {
+        if (stringClassPath != null && stringClassPath.trim().length() > 0) {
             String[] bits = stringClassPath.split(getPathSeparator());
             for (int i = 0; i < bits.length; i++) {
                 result.addEntry(getPathResolver().resolve(bits[i]));

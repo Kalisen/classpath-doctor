@@ -1,33 +1,36 @@
 
 package org.kalisen.classpathdoctor;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClassPath {
-    private Set<PathEntry> entries = null;
+    private List<PathEntry> entries = null;
 
     public ClassPath() {
-        // default constructor
+        this.entries = new ArrayList<PathEntry>();
     }
 
-    public ClassPath(Set<PathEntry> entries) {
+    public ClassPath(ArrayList<PathEntry> entries) {
         setEntries(entries);
     }
 
-    public Set<PathEntry> getEntries() {
-        return new HashSet<PathEntry>(this.entries);
+    public List<PathEntry> getEntries() {
+        return new ArrayList<PathEntry>(this.entries);
     }
 
-    public void setEntries(Set<PathEntry> entries) {
+    public void setEntries(List<PathEntry> entries) {
         if (entries == null) {
             throw new IllegalArgumentException("null is not a valid argument");
         }
-        this.entries = entries;
+        this.entries = new ArrayList<PathEntry>(entries);
     }
 
     public void addEntry(PathEntry pathEntry) {
-        // TODO Auto-generated method stub
+        if (pathEntry == null) {
+            throw new IllegalArgumentException("null is not a valid argument");
+        }
+        this.entries.add(pathEntry);
     }
 
 }

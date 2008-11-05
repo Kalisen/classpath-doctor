@@ -19,8 +19,8 @@ public class PathResolver {
             result = new InvalidPathEntry(path, "null is not a valid path");
         } else {
             String expandedPath = null;
+            expandedPath = getVariableResolver().resolve(path);
             try {
-                expandedPath = getVariableResolver().resolve(path);
                 URL url = new URL(expandedPath);
                 result = new URLPath(url);
             } catch (MalformedURLException e) {
@@ -29,6 +29,8 @@ public class PathResolver {
                     result = new DirectoryPath(f);
                 } else if (f.isFile()) {
                     result = new JarPath(f);
+                } else {
+                    result = new InvalidPathEntry(expandedPath, "entry doesn't exist");
                 }
             }
         }

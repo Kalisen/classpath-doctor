@@ -4,6 +4,9 @@ package org.kalisen.classpathdoctor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.testng.annotations.Test;
+
+@Test
 public abstract class AbstractVariableResolver implements VariableResolver {
 
     private Environment env = null;
@@ -24,7 +27,7 @@ public abstract class AbstractVariableResolver implements VariableResolver {
         while (m.find()) {
             var = m.group();
             varValue = resolve(getEnvironment().getValue(isolateVarName(var)));
-            result = path.replaceAll(var, varValue);
+            result = path.replaceAll(Pattern.quote(var), varValue);
         }
         return result;
     }
