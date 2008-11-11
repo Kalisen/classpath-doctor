@@ -1,11 +1,40 @@
 
 package org.kalisen.classpathdoctor;
 
+import java.util.List;
+
 public class ClassPathValidator {
 
-    public CheckResult check(String classpath) {
-        // TODO Auto-generated method stub
-        return null;
+    private ClassPathParser parser = null;
+    
+    public ClassPathValidator() {
+        super();
+    }
+
+    public ValidationReport validate(String classpath) {
+        ValidationReport result = new ValidationReport();
+        ClassPath cPath = getParser().parse(classpath);
+        List<PathEntry> entries = cPath.getEntries();
+        for (PathEntry pathEntry : entries) {
+            if (!pathEntry.exists()) {
+                result.addError(new ClassPathError(pathEntry));
+            }
+        }
+        return result;
+    }
+
+    public ClassPathParser getParser() {
+        if (this.parser == null) {
+            this.parser = new ClassPathParser();
+        }
+        return this.parser;
+    }
+
+    public void setParser(ClassPathParser parser) {
+        if (parser == null) {
+            throw new IllegalArgumentException("null is not a valid argument");
+        }
+        this.parser = parser;
     }
 
 }

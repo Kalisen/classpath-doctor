@@ -44,6 +44,15 @@ public abstract class AbstractTestClassPathParser {
     }
     
     @Test
+    public void parsingClasspathMadeOfSpacesShouldReturnEmptyClasspath() {
+        ClassPathParser parser = new ClassPathParser();
+        ClassPath path = parser.parse("           ");
+        List<PathEntry> entries = path.getEntries();
+        assertNotNull(entries);
+        assertEquals(entries.size(), 0);
+    }
+
+    @Test
     public void parsingEmptyClasspathShouldReturnEmptyClasspath() {
         ClassPathParser parser = new ClassPathParser();
         ClassPath path = parser.parse("");

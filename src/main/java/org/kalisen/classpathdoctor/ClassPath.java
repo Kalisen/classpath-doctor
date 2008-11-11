@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClassPath {
+    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private List<PathEntry> entries = null;
 
     public ClassPath() {
@@ -33,4 +34,17 @@ public class ClassPath {
         this.entries.add(pathEntry);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        if(this.entries.isEmpty()) {
+            result.append("Classpath is empty");
+        } else {
+            result.append("Classpath Entries List:").append(LINE_SEPARATOR);
+            for (PathEntry entry : this.entries) {
+                result.append(entry.toString()).append(LINE_SEPARATOR);
+            }
+        }
+        return result.toString();
+    }
 }

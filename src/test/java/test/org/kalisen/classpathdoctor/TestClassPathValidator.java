@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.kalisen.classpathdoctor.CheckResult;
+import org.kalisen.classpathdoctor.ValidationReport;
 import org.kalisen.classpathdoctor.ClassPathError;
 import org.kalisen.classpathdoctor.ClassPathValidator;
 import org.testng.annotations.AfterClass;
@@ -30,30 +30,33 @@ public class TestClassPathValidator {
     public void validatingNullClasspathShouldReturnNoError() {
         ClassPathValidator validator = new ClassPathValidator();
         String classpath = null;
-        CheckResult result = validator.check(classpath);
+        ValidationReport result = validator.validate(classpath);
         assertNotNull(result);
         assertTrue(result.isOk());
-        assertNull(result.getErrors());
+        assertNotNull(result.getErrors());
+        assertTrue(result.getErrors().isEmpty());
     }
 
     @Test
     public void validatingAnEmptyStringShouldReturnNoError() {
         ClassPathValidator validator = new ClassPathValidator();
         String classpath = "";
-        CheckResult result = validator.check(classpath);
+        ValidationReport result = validator.validate(classpath);
         assertNotNull(result);
         assertTrue(result.isOk());
-        assertNull(result.getErrors());
+        assertNotNull(result.getErrors());
+        assertTrue(result.getErrors().isEmpty());
     }
 
     @Test
     public void validatingAStringMadeOfSpacesShouldReturnNoError() {
         ClassPathValidator validator = new ClassPathValidator();
         String classpath = "        ";
-        CheckResult result = validator.check(classpath);
+        ValidationReport result = validator.validate(classpath);
         assertNotNull(result);
         assertTrue(result.isOk());
-        assertNull(result.getErrors());
+        assertNotNull(result.getErrors());
+        assertTrue(result.getErrors().isEmpty());
     }
 
     @Test
@@ -62,7 +65,7 @@ public class TestClassPathValidator {
         String classpath = this.jar1.getPath()
                 + PATH_SEPARATOR + this.jar2.getPath() + PATH_SEPARATOR
                 + "missing.jar" + PATH_SEPARATOR + this.jar3.getPath();
-        CheckResult result = validator.check(classpath);
+        ValidationReport result = validator.validate(classpath);
         assertNotNull(result);
         assertFalse(result.isOk());
         List<ClassPathError> errors = result.getErrors();
@@ -77,11 +80,12 @@ public class TestClassPathValidator {
         String classpath = this.jar1.getPath()
                 + PATH_SEPARATOR + this.jar2.getPath() + PATH_SEPARATOR
                 + this.jar3.getPath();
-        CheckResult result = validator.check(classpath);
+        ValidationReport result = validator.validate(classpath);
         assertNotNull(result);
         assertTrue(result.isOk());
         List<ClassPathError> errors = result.getErrors();
-        assertNull(errors);
+        assertNotNull(errors);
+        assertTrue(errors.isEmpty());
     }
 
     @Test
@@ -91,11 +95,12 @@ public class TestClassPathValidator {
         String classpath = this.jar1.getPath()
                 + PATH_SEPARATOR + classPathEntry + PATH_SEPARATOR
                 + this.jar2.getPath() + PATH_SEPARATOR + this.jar3.getPath();
-        CheckResult result = validator.check(classpath);
+        ValidationReport result = validator.validate(classpath);
         assertNotNull(result);
         assertTrue(result.isOk());
         List<ClassPathError> errors = result.getErrors();
-        assertNull(errors);
+        assertNotNull(errors);
+        assertTrue(errors.isEmpty());
     }
 
     private String getVariableBasedEntry() {
