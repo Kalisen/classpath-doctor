@@ -3,6 +3,7 @@ package org.kalisen.classpathdoctor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class ClassPath {
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
@@ -22,14 +23,16 @@ public class ClassPath {
 
     public void setEntries(List<PathEntry> entries) {
         if (entries == null) {
-            throw new IllegalArgumentException("null is not a valid argument");
+            throw new IllegalArgumentException(ResourceBundle.getBundle("UsersMessages")
+                                               .getString("null.is.not.a.valid.argument"));
         }
         this.entries = new ArrayList<PathEntry>(entries);
     }
 
     public void addEntry(PathEntry pathEntry) {
         if (pathEntry == null) {
-            throw new IllegalArgumentException("null is not a valid argument");
+            throw new IllegalArgumentException(ResourceBundle.getBundle("UsersMessages")
+                                               .getString("null.is.not.a.valid.argument"));
         }
         this.entries.add(pathEntry);
     }
@@ -38,9 +41,11 @@ public class ClassPath {
     public String toString() {
         StringBuilder result = new StringBuilder();
         if(this.entries.isEmpty()) {
-            result.append("Classpath is empty");
+            result.append(ResourceBundle.getBundle("UsersMessages")
+                          .getString("classpath.is.empty"));
         } else {
-            result.append("Classpath Entries List:").append(LINE_SEPARATOR);
+            result.append(ResourceBundle.getBundle("UsersMessages")
+                          .getString("classpath.entries.list")).append(LINE_SEPARATOR);
             for (PathEntry entry : this.entries) {
                 result.append(entry.toString()).append(LINE_SEPARATOR);
             }

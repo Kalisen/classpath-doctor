@@ -2,6 +2,7 @@
 package org.kalisen.classpathdoctor;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class ClassPathValidator {
 
@@ -32,7 +33,8 @@ public class ClassPathValidator {
 
     public void setParser(ClassPathParser parser) {
         if (parser == null) {
-            throw new IllegalArgumentException("null is not a valid argument");
+            throw new IllegalArgumentException(ResourceBundle.getBundle("UsersMessages")
+                                               .getString("null.is.not.a.valid.argument"));
         }
         this.parser = parser;
     }

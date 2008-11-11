@@ -2,6 +2,7 @@ package org.kalisen.classpathdoctor;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ResourceBundle;
 
 public class URLPath implements PathEntry {
 
@@ -36,7 +37,8 @@ public class URLPath implements PathEntry {
 
     public void setUrl(URL url) {
         if (url == null) {
-            throw new IllegalArgumentException("null is not a valid argument");
+            throw new IllegalArgumentException(ResourceBundle.getBundle("UsersMessages")
+                                               .getString("null.is.not.a.valid.argument"));
         }
         this.url = url;
     }

@@ -1,6 +1,7 @@
 
 package org.kalisen.classpathdoctor;
 
+import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,7 +18,8 @@ public abstract class AbstractVariableResolver implements VariableResolver {
 
     public String resolve(String path) {
         if (path == null) {
-            throw new IllegalArgumentException("null is not a valid argument");
+            throw new IllegalArgumentException(ResourceBundle.getBundle("UsersMessages")
+                                               .getString("null.is.not.a.valid.argument"));
         }
         String result = path;
         Pattern p = getVariablePattern();
@@ -43,7 +45,8 @@ public abstract class AbstractVariableResolver implements VariableResolver {
 
     public void setEnvironment(Environment env) {
         if (env == null) {
-            throw new IllegalArgumentException("Null is not a valid argument");
+            throw new IllegalArgumentException(ResourceBundle.getBundle("UsersMessages")
+                                               .getString("null.is.not.a.valid.argument"));
         }
         this.env = env;
     }

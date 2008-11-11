@@ -4,6 +4,7 @@ package org.kalisen.classpathdoctor;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ResourceBundle;
 
 public class PathResolver {
 
@@ -16,7 +17,8 @@ public class PathResolver {
     public PathEntry resolve(String path) {
         PathEntry result = null;
         if (path == null) {
-            result = new InvalidPathEntry(path, "null is not a valid path");
+            result = new InvalidPathEntry(path, ResourceBundle.getBundle("UsersMessages")
+                                          .getString("null.is.not.a.valid.path"));
         } else {
             String expandedPath = null;
             expandedPath = getVariableResolver().resolve(path);
@@ -30,7 +32,8 @@ public class PathResolver {
                 } else if (f.isFile()) {
                     result = new JarPath(f);
                 } else {
-                    result = new InvalidPathEntry(expandedPath, "entry doesn't exist");
+                    result = new InvalidPathEntry(expandedPath, ResourceBundle.getBundle("UsersMessages")
+                                                  .getString("entry.doesnt.exist"));
                 }
             }
         }
@@ -57,7 +60,8 @@ public class PathResolver {
 
     public void setVariableResolver(VariableResolver varResolver) {
         if (varResolver == null) {
-            throw new IllegalArgumentException("Null is not a valid argument");
+            throw new IllegalArgumentException(ResourceBundle.getBundle("UsersMessages")
+                                               .getString("null.is.not.a.valid.argument"));
         }
         this.varResolver = varResolver;
     }

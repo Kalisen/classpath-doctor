@@ -1,6 +1,8 @@
 
 package org.kalisen.classpathdoctor;
 
+import java.util.ResourceBundle;
+
 public class ClassPathError {
 
     private PathEntry entry = null;
@@ -17,7 +19,8 @@ public class ClassPathError {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        result.append("the following entry is invalid: ")
+        result.append(ResourceBundle.getBundle("UsersMessages")
+                      .getString("null.is.not.a.valid.argument"))
                 .append(getResourceName());
         return result.toString();
     }

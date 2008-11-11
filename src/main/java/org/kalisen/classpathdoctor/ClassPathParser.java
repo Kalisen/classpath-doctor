@@ -1,6 +1,8 @@
 
 package org.kalisen.classpathdoctor;
 
+import java.util.ResourceBundle;
+
 
 public class ClassPathParser {
 
@@ -35,7 +37,8 @@ public class ClassPathParser {
 
     public void setPathSeparator(String pathSeparator) {
         if (pathSeparator == null) {
-            throw new IllegalArgumentException("null is not a valid argument");
+            throw new IllegalArgumentException(ResourceBundle.getBundle("UsersMessages")
+                                               .getString("null.is.not.a.valid.argument"));
         }
         this.pathSeparator = pathSeparator;
     }
@@ -49,7 +52,8 @@ public class ClassPathParser {
 
     public void setPathResolver(PathResolver pathResolver) {
         if (pathResolver == null) {
-            throw new IllegalArgumentException("null is not a valid argument");
+            throw new IllegalArgumentException(ResourceBundle.getBundle("UsersMessages")
+                                               .getString("null.is.not.a.valid.argument"));
         }
         this.pathResolver = pathResolver;
     }
