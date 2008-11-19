@@ -5,7 +5,11 @@ import java.util.Observer;
 
 public abstract class AbstractAdapter implements Adapter {
 
-	private MyObservable notifier = new MyObservable();
+	private MyObservable notifier = null;
+
+	public AbstractAdapter() {
+		setNotifier(new MyObservable());
+	}
 	
 	public void addListener(Observer o) {
 		if (o == null) {
@@ -34,9 +38,6 @@ public abstract class AbstractAdapter implements Adapter {
 	
 
 	protected class MyObservable extends Observable {
-
-		public MyObservable() {
-		}
 
 		@Override
 		public synchronized void setChanged() {

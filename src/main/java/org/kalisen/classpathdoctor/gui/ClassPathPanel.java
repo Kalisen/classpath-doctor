@@ -16,6 +16,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 
+import org.kalisen.classpathdoctor.ClassPath;
+import org.kalisen.classpathdoctor.PathEntry;
 import org.kalisen.classpathdoctor.adapter.ClassPathAdapter;
 import org.kalisen.classpathdoctor.adapter.DefaultClassPathAdapter;
 import org.kalisen.common.ErrorHandler;
@@ -57,8 +59,13 @@ public class ClassPathPanel extends JPanel {
 
 	private Observer adapterListener = new Observer() {
 		public void update(Observable o, Object arg) {
-			DefaultListModel model = ClassPathPanel.this.classpathListModel;
-			model.addElement(arg);
+			if (arg instanceof ClassPath) {
+				DefaultListModel model = ClassPathPanel.this.classpathListModel;
+				model.clear();
+				for (PathEntry entry : ((ClassPath)arg).getEntries()) {
+					model.addElement(entry);
+				}
+			}
 		}
 	};
 	
