@@ -1,79 +1,132 @@
 package org.kalisen.classpathdoctor.gui;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
+import java.util.Observable;
+import java.util.Observer;
 
-import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
+import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+
+import org.kalisen.classpathdoctor.adapter.ClassPathAdapter;
+import org.kalisen.classpathdoctor.adapter.DefaultClassPathAdapter;
+import org.kalisen.common.ErrorHandler;
 
 @SuppressWarnings("serial")
 public class ClassPathPanel extends JPanel {
-    private JList classpathList = null;
-    private JTextArea classpathTextField = null;
-    private JPanel buttonPanel = null;
-    
-    public ClassPathPanel() {
-        init();
-    }
 
-    private void init() {
-    	setLayout(new BorderLayout());
-        this.classpathList = buildListComponent();
-        this.classpathTextField = buildTextComponent();
-        this.buttonPanel = buildButtonPanel();
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        splitPane.setDividerLocation(.8);
-        splitPane.setResizeWeight(.8);
-        splitPane.add(this.classpathList, JSplitPane.TOP);
-        splitPane.add(this.classpathTextField, JSplitPane.BOTTOM);
-        add(splitPane, BorderLayout.CENTER);
-        add(this.buttonPanel, BorderLayout.EAST);
-    }
-    
+	private ErrorHandler errorHandler = null;
+	private JList classpathList = null;
+	private DefaultListModel classpathListModel = null;
+	private JTextArea classpathTextArea = null;
+	private JPanel buttonPanel = null;
+	private ClassPathAdapter adapter = null;
+
+	private DocumentListener textAreaListener = new DocumentListener() {
+		public void changedUpdate(DocumentEvent e) {
+			notifyAdapter(e);
+		}
+
+		public void insertUpdate(DocumentEvent e) {
+			notifyAdapter(e);
+		}
+
+		public void removeUpdate(DocumentEvent e) {
+			notifyAdapter(e);
+		}
+
+		private void notifyAdapter(DocumentEvent e) {
+			try {
+				getAdapter()
+						.updateClassPath(
+								e.getDocument().getText(0,
+										e.getDocument().getLength()));
+			} catch (BadLocationException ble) {
+				handleError(ble);
+			}
+		}
+	};
+
+	private Observer adapterListener = new Observer() {
+		public void update(Observable o, Object arg) {
+			DefaultListModel model = ClassPathPanel.this.classpathListModel;
+			model.addElement(arg);
+		}
+	};
+	
+	
+	public ClassPathPanel() {
+		init();
+	}
+
+	private void init() {
+		setLayout(new BorderLayout());
+		this.classpathList = buildListComponent();
+		this.classpathTextArea = buildTextComponent();
+		this.buttonPanel = buildButtonPanel();
+		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		splitPane.setDividerLocation(.8);
+		splitPane.setResizeWeight(.8);
+		JScrollPane listScrollPane = new JScrollPane(this.classpathList);
+		splitPane.add(listScrollPane, JSplitPane.TOP);
+		splitPane.add(this.classpathTextArea, JSplitPane.BOTTOM);
+		add(splitPane, BorderLayout.CENTER);
+		add(this.buttonPanel, BorderLayout.EAST);
+		initListeners();
+	}
+
+	private void initListeners() {
+		this.classpathTextArea.getDocument().addDocumentListener(
+				this.textAreaListener);
+		getAdapter().addListener(this.adapterListener);
+	}
+
 	private JPanel buildButtonPanel() {
 		JPanel result = new JPanel();
 		result.setLayout(new BoxLayout(result, BoxLayout.Y_AXIS));
 		result.add(Box.createVerticalGlue());
-		JButton addButton = new JButton(new AddEntryAction());
-		result.add(addButton);
-		JButton removeButton = new JButton(new RemoveEntryAction());
-		result.add(removeButton);
+		// JButton upButton = new JButton(new MoveEntryUpAction);
+		// result.add(upButton);
+		// JButton downButton = new JButton(new MoveEntryDownAction());
+		// result.add(downButton);
 		result.add(Box.createVerticalGlue());
 		return result;
 	}
 
 	private JTextArea buildTextComponent() {
 		JTextArea result = new JTextArea();
-		
 		return result;
 	}
 
 	private JList buildListComponent() {
-		JList result = new JList();
+		this.classpathListModel = new DefaultListModel();
+		JList result = new JList(this.classpathListModel);
 		return result;
 	}
-	
-	class AddEntryAction extends AbstractAction {
 
-		public void actionPerformed(ActionEvent arg0) {
-			// TODO Auto-generated method stub
-			
+	public ClassPathAdapter getAdapter() {
+		if (this.adapter == null) {
+			this.adapter = new DefaultClassPathAdapter();
 		}
-		
+		return adapter;
 	}
 
-	class RemoveEntryAction extends AbstractAction {
-
-		public void actionPerformed(ActionEvent arg0) {
-			// TODO Auto-generated method stub
-			
+	public void setAdapter(ClassPathAdapter adapter) {
+		if (adapter == null) {
+			throw new IllegalArgumentException("null is not a valid argument");
 		}
-		
+		this.adapter = adapter;
+	}
+	
+	public void handleError(Throwable t) {
+		this.errorHandler.handleError(t);
 	}
 }
