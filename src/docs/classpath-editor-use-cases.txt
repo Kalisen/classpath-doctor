@@ -2,7 +2,10 @@
 	the user paste a classpath in the lower panel
 	the list in the above panel is populated with the classpath elements, one per line
 
+Use case 3
+	the user add an entry at the end of the list using the “Add” button
+
 Use Case 2
-If selecting the item at the top of the list, the user should not be able to click the move up button, the button should be disabled
+	If selecting the item at the top of the list, the user should not be able to click the move up button, the button should be disabled
 
 

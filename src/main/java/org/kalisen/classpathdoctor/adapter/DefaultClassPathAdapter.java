@@ -14,10 +14,20 @@ public class DefaultClassPathAdapter extends AbstractAdapter implements
 	      this.parser = new ClassPathParser();
 	}
 	
-	public void updateClassPath(String text) {
+	public void setClassPath(String text) {
 		this.currentClasspath = parser.parse(text);
 		getNotifier().setChanged();
 		getNotifier().notifyObservers(this.currentClasspath);
 	}
 
+	public void addEntry(String entryPath) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void removeEntry(String entryPath) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }

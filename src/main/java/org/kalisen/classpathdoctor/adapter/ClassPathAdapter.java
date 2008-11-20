@@ -4,6 +4,10 @@ import org.kalisen.common.adapter.Adapter;
 
 public interface ClassPathAdapter extends Adapter {
 
-	void updateClassPath(String text);
+	void setClassPath(String text);
+
+	void addEntry(String entryPath);
+
+	void removeEntry(String entryPath);
 
 }

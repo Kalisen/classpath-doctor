@@ -7,6 +7,7 @@ import java.util.Observer;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,16 +21,20 @@ import org.kalisen.classpathdoctor.ClassPath;
 import org.kalisen.classpathdoctor.PathEntry;
 import org.kalisen.classpathdoctor.adapter.ClassPathAdapter;
 import org.kalisen.classpathdoctor.adapter.DefaultClassPathAdapter;
+import org.kalisen.classpathdoctor.gui.actions.AddAnEntryAction;
+import org.kalisen.classpathdoctor.gui.actions.RemoveAnEntryAction;
 import org.kalisen.common.ErrorHandler;
 
 @SuppressWarnings("serial")
 public class ClassPathPanel extends JPanel {
 
 	private ErrorHandler errorHandler = null;
+
 	private JList classpathList = null;
-	private DefaultListModel classpathListModel = null;
 	private JTextArea classpathTextArea = null;
 	private JPanel buttonPanel = null;
+
+	private DefaultListModel classpathListModel = null;
 	private ClassPathAdapter adapter = null;
 
 	private DocumentListener textAreaListener = new DocumentListener() {
@@ -48,7 +53,7 @@ public class ClassPathPanel extends JPanel {
 		private void notifyAdapter(DocumentEvent e) {
 			try {
 				getAdapter()
-						.updateClassPath(
+						.setClassPath(
 								e.getDocument().getText(0,
 										e.getDocument().getLength()));
 			} catch (BadLocationException ble) {
@@ -62,14 +67,13 @@ public class ClassPathPanel extends JPanel {
 			if (arg instanceof ClassPath) {
 				DefaultListModel model = ClassPathPanel.this.classpathListModel;
 				model.clear();
-				for (PathEntry entry : ((ClassPath)arg).getEntries()) {
+				for (PathEntry entry : ((ClassPath) arg).getEntries()) {
 					model.addElement(entry);
 				}
 			}
 		}
 	};
-	
-	
+
 	public ClassPathPanel() {
 		init();
 	}
@@ -100,10 +104,10 @@ public class ClassPathPanel extends JPanel {
 		JPanel result = new JPanel();
 		result.setLayout(new BoxLayout(result, BoxLayout.Y_AXIS));
 		result.add(Box.createVerticalGlue());
-		// JButton upButton = new JButton(new MoveEntryUpAction);
-		// result.add(upButton);
-		// JButton downButton = new JButton(new MoveEntryDownAction());
-		// result.add(downButton);
+		 JButton addButton = new JButton(new AddAnEntryAction(this, getAdapter()));
+		 result.add(addButton);
+		 JButton removeButton = new JButton(new RemoveAnEntryAction(getAdapter()));
+		 result.add(removeButton);
 		result.add(Box.createVerticalGlue());
 		return result;
 	}
@@ -132,7 +136,7 @@ public class ClassPathPanel extends JPanel {
 		}
 		this.adapter = adapter;
 	}
-	
+
 	public void handleError(Throwable t) {
 		this.errorHandler.handleError(t);
 	}
