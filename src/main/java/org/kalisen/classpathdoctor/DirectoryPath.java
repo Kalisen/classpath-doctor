@@ -9,4 +9,8 @@ public class DirectoryPath extends AbstractFilePathEntry {
         super(f);
     }
 
+	public DirectoryPath(String stringPath) {
+		super(stringPath);
+	}
+
 }

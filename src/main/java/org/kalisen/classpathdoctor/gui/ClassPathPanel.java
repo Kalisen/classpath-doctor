@@ -65,10 +65,18 @@ public class ClassPathPanel extends JPanel {
 	private Observer adapterListener = new Observer() {
 		public void update(Observable o, Object arg) {
 			if (arg instanceof ClassPath) {
+				ClassPath cp = (ClassPath)arg;
+				//update the list
 				DefaultListModel model = ClassPathPanel.this.classpathListModel;
 				model.clear();
-				for (PathEntry entry : ((ClassPath) arg).getEntries()) {
+				for (PathEntry entry : cp.getEntries()) {
 					model.addElement(entry);
+				}
+				
+				//update the text area
+				String classPathAsText = cp.toString();
+				if (!classPathAsText.equals(ClassPathPanel.this.classpathTextArea)) {
+					ClassPathPanel.this.classpathTextArea.setText(classPathAsText);
 				}
 			}
 		}

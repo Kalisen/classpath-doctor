@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class ClassPath {
-    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private List<PathEntry> entries = null;
+    private ClassPathFormatter formatter = null;
 
     public ClassPath() {
         this.entries = new ArrayList<PathEntry>();
@@ -39,17 +39,45 @@ public class ClassPath {
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
-        if(this.entries.isEmpty()) {
-            result.append(ResourceBundle.getBundle("UsersMessages")
-                          .getString("classpath.is.empty"));
-        } else {
-            result.append(ResourceBundle.getBundle("UsersMessages")
-                          .getString("classpath.entries.list")).append(LINE_SEPARATOR);
-            for (PathEntry entry : this.entries) {
-                result.append(entry.toString()).append(LINE_SEPARATOR);
-            }
-        }
-        return result.toString();
+    	 return getFormatter().format(this);
     }
+
+	public ClassPathFormatter getFormatter() {
+		if (this.formatter == null) {
+			this.formatter = new DefaultClassPathFormatter();
+		}
+		return this.formatter;
+	}
+
+	public void setFormatter(ClassPathFormatter formatter) {
+		if (formatter == null) {
+			throw new IllegalArgumentException("null is not a valid argument");
+		}
+		this.formatter = formatter;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || obj.getClass() != getClass()) {
+			return false;
+		}
+		int entriesCount = this.entries.size();
+		ClassPath other = (ClassPath) obj;
+		if (entriesCount != other.entries.size()) {
+			return false;
+		}
+		for (int i = 0; i < entriesCount; i++) {
+			if (!this.entries.get(i).equals(other.entries.get(i))) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return toString().hashCode();
+	}
+    
+    
 }

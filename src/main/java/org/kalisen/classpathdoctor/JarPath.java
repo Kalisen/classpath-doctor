@@ -9,5 +9,9 @@ public class JarPath extends AbstractFilePathEntry {
         super(f);
     }
 
+	public JarPath(String filePath) {
+		super(filePath);
+	}
+
 
 }
