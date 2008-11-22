@@ -75,7 +75,7 @@ public class ClassPathPanel extends JPanel {
 				
 				//update the text area
 				String classPathAsText = cp.toString();
-				if (!classPathAsText.equals(ClassPathPanel.this.classpathTextArea)) {
+				if (!classPathAsText.equals(ClassPathPanel.this.classpathTextArea.getText())) {
 					ClassPathPanel.this.classpathTextArea.setText(classPathAsText);
 				}
 			}
@@ -122,6 +122,8 @@ public class ClassPathPanel extends JPanel {
 
 	private JTextArea buildTextComponent() {
 		JTextArea result = new JTextArea();
+		result.setWrapStyleWord(true);
+		result.setLineWrap(true);
 		return result;
 	}
 

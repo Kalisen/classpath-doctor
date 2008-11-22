@@ -16,12 +16,13 @@ public class DefaultClassPathFormatter implements ClassPathFormatter {
 			builder = new StringBuilder();
 		}
         List<PathEntry> entries = cp.getEntries();
-        boolean first = true;
+        boolean separate = false;
         for (PathEntry entry : entries) {
-        	if (!first) {
+        	if (separate) {
         		builder.append(getPathSeparator());
         	}
             builder.append(entry.toString());
+    		separate = true;
         }
         return builder;
 	}
