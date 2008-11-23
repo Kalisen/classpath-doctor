@@ -9,9 +9,14 @@ import java.util.ResourceBundle;
 public class PathResolver {
 
     private VariableResolver varResolver = null;
+	private String fileSeparator = null;
 
     public PathResolver() {
         // default constructor
+    }
+
+    public PathResolver(String fileSeparator) {
+        this.fileSeparator = fileSeparator;
     }
 
     public PathEntry resolve(String path) {
@@ -28,7 +33,7 @@ public class PathResolver {
             } catch (MalformedURLException e) {
                 File f = new File(expandedPath);
                 if (f.isDirectory()) {
-                    result = new DirectoryPath(f);
+                    result = new DirectoryPath(f, getFileSeparator());
                 } else if (f.isFile()) {
                     result = new JarPath(f);
                 } else {
@@ -65,5 +70,19 @@ public class PathResolver {
         }
         this.varResolver = varResolver;
     }
+
+    public String getFileSeparator() {
+    	if (this.fileSeparator == null) {
+    		this.fileSeparator = System.getProperty("file.separator");
+    	}
+		return this.fileSeparator;
+	}
+
+	public void setFileSeparator(String fileSeparator) {
+		if (fileSeparator == null) {
+			throw new IllegalArgumentException("null is not a valid argument");
+		}
+		this.fileSeparator = fileSeparator;
+	}
 
 }

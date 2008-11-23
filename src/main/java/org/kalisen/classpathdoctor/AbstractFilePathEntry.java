@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 public abstract class AbstractFilePathEntry implements PathEntry {
 
 	private Version version = new DefaultVersion();
+	private String fileSeparator = null;
 	private File file = null;
 	private String path = null;
 
@@ -86,5 +87,19 @@ public abstract class AbstractFilePathEntry implements PathEntry {
 		return true;
 	}
 
+	public String getFileSeparator() {
+		if (this.fileSeparator == null) {
+			this.fileSeparator = System.getProperty("file.separator");
+		}
+		return this.fileSeparator;
+	}
 
+	public void setFileSeparator(String fileSeparator) {
+		if (fileSeparator == null) {
+			throw new IllegalArgumentException("null is not a valid argument");
+		}
+		this.fileSeparator = fileSeparator;
+	}
+
+	
 }

@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 public class ClassPathParser {
 
     private String pathSeparator = null;
+    private String fileSeparator = null;
     private PathResolver pathResolver = null;
 
     public ClassPathParser() {
@@ -45,9 +46,23 @@ public class ClassPathParser {
         this.pathSeparator = pathSeparator;
     }
 
-    public PathResolver getPathResolver() {
+    public String getFileSeparator() {
+    	if (this.fileSeparator == null) {
+    		this.fileSeparator = System.getProperty("file.separator");
+    	}
+		return this.fileSeparator;
+	}
+
+	public void setFileSeparator(String fileSeparator) {
+		if (fileSeparator == null) {
+			throw new IllegalArgumentException("null is not a valid argument");
+		}
+		this.fileSeparator = fileSeparator;
+	}
+
+	public PathResolver getPathResolver() {
         if (this.pathResolver == null) {
-            this.pathResolver = new PathResolver();
+            this.pathResolver = new PathResolver(getFileSeparator());
         }
         return this.pathResolver;
     }

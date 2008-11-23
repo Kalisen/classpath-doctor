@@ -14,6 +14,9 @@ public class TestDefaultClassPathAdapter {
 
 	private static final String PATH_SEPARATOR = System
 			.getProperty("path.separator");
+	private static final String FILE_SEPARATOR = System
+			.getProperty("file.separator");
+	private static final String CURRENT_DIR = "." + FILE_SEPARATOR;
 
 	public void setClassPathShouldTriggerAnEventContainingTheUpdatedClassPath()
 			throws Exception {
@@ -23,7 +26,7 @@ public class TestDefaultClassPathAdapter {
 		MockObserver obs = new MockObserver(expectedClasspath);
 		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
 		adapter.addListener(obs);
-		adapter.setClassPath("./");
+		adapter.setClassPath(CURRENT_DIR);
 		Assert.assertTrue(obs.hasBeenCalled,
 				"The Observer should have been called");
 	}
@@ -31,25 +34,27 @@ public class TestDefaultClassPathAdapter {
 	public void setClassPathShouldNotTriggerAnEventIfTheOnlyDifferenceIsASeparatorAtTheEnd() {
 		MockObserver obs = new MockObserver(null, false);
 		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
-		adapter.setClassPath("./");
+		adapter.setClassPath(CURRENT_DIR);
 		adapter.addListener(obs);
-		adapter.setClassPath("./" + PATH_SEPARATOR);
+		adapter.setClassPath(CURRENT_DIR + PATH_SEPARATOR);
 	}
 
 	public void setClassPathShouldNotTriggerAnEventIfTheOnlyDifferenceIsASeparatorAtTheBeginning() {
 		MockObserver obs = new MockObserver(null, false);
 		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
-		adapter.setClassPath("./");
+		adapter.setClassPath(CURRENT_DIR);
 		adapter.addListener(obs);
-		adapter.setClassPath(PATH_SEPARATOR + "./");
+		adapter.setClassPath(PATH_SEPARATOR + CURRENT_DIR);
 	}
 
 	public void setClassPathShouldNotTriggerAnEventIfTheOnlyDifferenceIsASeparatorInTheMiddle() {
 		MockObserver obs = new MockObserver(null, false);
 		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
-		adapter.setClassPath("./" + PATH_SEPARATOR + "./");
+		adapter.setClassPath(CURRENT_DIR + PATH_SEPARATOR + "."
+				+ FILE_SEPARATOR);
 		adapter.addListener(obs);
-		adapter.setClassPath("./" + PATH_SEPARATOR + PATH_SEPARATOR + "./");
+		adapter.setClassPath(CURRENT_DIR + PATH_SEPARATOR
+				+ PATH_SEPARATOR + CURRENT_DIR);
 	}
 
 	public void addAnEntryShouldTriggerAnEventContainingTheUpdatedClassPath()
@@ -60,8 +65,9 @@ public class TestDefaultClassPathAdapter {
 		MockObserver obs = new MockObserver(expectedClasspath);
 		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
 		adapter.addListener(obs);
-		adapter.addEntry("./");
-		Assert.assertTrue(obs.hasBeenCalled, "The Observer should have been called");
+		adapter.addEntry(CURRENT_DIR);
+		Assert.assertTrue(obs.hasBeenCalled,
+				"The Observer should have been called");
 	}
 
 	private class MockObserver implements Observer {
