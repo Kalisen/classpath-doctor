@@ -24,20 +24,21 @@ public class InvalidPathEntry implements PathEntry {
     public Version getVersion() {
         return this.version;
     }
+    
+    public String getMessage() {
+		return this.message;
+	}
 
-    public boolean exists() {
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public boolean exists() {
         return false;
     }
 
     public String toString() {
-        if (this.message == null) {
-            return getPath();
-        } else {
-            return new StringBuilder(this.message).append("(")
-                    .append(getPath())
-                    .append(")")
-                    .toString();
-        }
+        return getPath();
     }
 
 	@Override

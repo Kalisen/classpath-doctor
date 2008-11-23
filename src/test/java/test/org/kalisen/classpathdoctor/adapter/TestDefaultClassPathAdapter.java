@@ -11,8 +11,12 @@ import org.testng.annotations.Test;
 
 @Test
 public class TestDefaultClassPathAdapter {
-	
-	public void setClassPathShouldTriggerAnEventContainingTheUpdatedClassPath() throws Exception {
+
+	private static final String PATH_SEPARATOR = System
+			.getProperty("path.separator");
+
+	public void setClassPathShouldTriggerAnEventContainingTheUpdatedClassPath()
+			throws Exception {
 		final ClassPath expectedClasspath = new ClassPath();
 		expectedClasspath.addEntry(new DirectoryPath("."));
 
@@ -20,30 +24,66 @@ public class TestDefaultClassPathAdapter {
 		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
 		adapter.addListener(obs);
 		adapter.setClassPath("./");
-		Assert.assertTrue(obs.hasBeenCalled, "The Observer hasn't been called");
+		Assert.assertTrue(obs.hasBeenCalled,
+				"The Observer should have been called");
 	}
-	
-	public void addAnEntryShouldTriggerAnEventContainingTheUpdatedClassPath() throws Exception {
+
+	public void setClassPathShouldNotTriggerAnEventIfTheOnlyDifferenceIsASeparatorAtTheEnd() {
+		MockObserver obs = new MockObserver(null, false);
+		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
+		adapter.setClassPath("./");
+		adapter.addListener(obs);
+		adapter.setClassPath("./" + PATH_SEPARATOR);
+	}
+
+	public void setClassPathShouldNotTriggerAnEventIfTheOnlyDifferenceIsASeparatorAtTheBeginning() {
+		MockObserver obs = new MockObserver(null, false);
+		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
+		adapter.setClassPath("./");
+		adapter.addListener(obs);
+		adapter.setClassPath(PATH_SEPARATOR + "./");
+	}
+
+	public void setClassPathShouldNotTriggerAnEventIfTheOnlyDifferenceIsASeparatorInTheMiddle() {
+		MockObserver obs = new MockObserver(null, false);
+		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
+		adapter.setClassPath("./" + PATH_SEPARATOR + "./");
+		adapter.addListener(obs);
+		adapter.setClassPath("./" + PATH_SEPARATOR + PATH_SEPARATOR + "./");
+	}
+
+	public void addAnEntryShouldTriggerAnEventContainingTheUpdatedClassPath()
+			throws Exception {
 		final ClassPath expectedClasspath = new ClassPath();
 		expectedClasspath.addEntry(new DirectoryPath("."));
-		
+
 		MockObserver obs = new MockObserver(expectedClasspath);
 		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
 		adapter.addListener(obs);
 		adapter.addEntry("./");
-		Assert.assertTrue(obs.hasBeenCalled, "The Observer hasn't been called");
+		Assert.assertTrue(obs.hasBeenCalled, "The Observer should have been called");
 	}
-	
+
 	private class MockObserver implements Observer {
 		public boolean hasBeenCalled = false;
 		private ClassPath expectedClasspath = null;
-		
+		private boolean isCallExpected = true;
+
 		public MockObserver(ClassPath expectedClassPath) {
 			this.expectedClasspath = expectedClassPath;
 		}
-		
+
+		public MockObserver(ClassPath expectedClassPath, boolean isCallExpected) {
+			this.expectedClasspath = expectedClassPath;
+			this.isCallExpected = isCallExpected;
+		}
+
 		public void update(Observable o, Object arg) {
-			Assert.assertEquals(expectedClasspath, arg);
+			if (this.isCallExpected) {
+				Assert.assertEquals(expectedClasspath, arg);
+			} else {
+				Assert.fail("Unexpected call to the observer");
+			}
 			this.hasBeenCalled = true;
 		}
 	}

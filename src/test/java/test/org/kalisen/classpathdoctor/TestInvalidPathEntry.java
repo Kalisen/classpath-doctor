@@ -55,7 +55,7 @@ public class TestInvalidPathEntry {
         final String path = "sometwisted   path";
         final String message = "some message";
         InvalidPathEntry invalid = new InvalidPathEntry(path, message);
-        assertEquals(invalid.toString(), message + "(" + path + ")");
+        assertEquals(invalid.toString(), path);
     }
 
 }

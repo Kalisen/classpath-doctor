@@ -22,7 +22,9 @@ public class ClassPathParser {
         if (stringClassPath != null && stringClassPath.trim().length() > 0) {
             String[] bits = stringClassPath.split(getPathSeparator());
             for (int i = 0; i < bits.length; i++) {
-                result.addEntry(getPathResolver().resolve(bits[i]));
+            	if (bits[i] != null && bits[i].length() > 0) {
+            		result.addEntry(getPathResolver().resolve(bits[i]));
+            	}
             }
         }
         return result;
