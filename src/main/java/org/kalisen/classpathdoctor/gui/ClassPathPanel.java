@@ -1,6 +1,7 @@
 package org.kalisen.classpathdoctor.gui;
 
 import java.awt.BorderLayout;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -13,16 +14,19 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.kalisen.classpathdoctor.ClassPath;
 import org.kalisen.classpathdoctor.PathEntry;
 import org.kalisen.classpathdoctor.adapter.ClassPathAdapter;
 import org.kalisen.classpathdoctor.adapter.DefaultClassPathAdapter;
 import org.kalisen.classpathdoctor.gui.actions.AddAnEntryAction;
 import org.kalisen.classpathdoctor.gui.actions.RemoveAnEntryAction;
+import org.kalisen.common.DefaultErrorHandler;
 import org.kalisen.common.ErrorHandler;
 
 @SuppressWarnings("serial")
@@ -50,34 +54,49 @@ public class ClassPathPanel extends JPanel {
 			notifyAdapter(e);
 		}
 
-		private void notifyAdapter(DocumentEvent e) {
-			try {
-				getAdapter()
-						.setClassPath(
+		private void notifyAdapter(final DocumentEvent e) {
+			SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+
+				@Override
+				protected Void doInBackground() throws Exception {
+					try {
+						getAdapter().setClassPath(
 								e.getDocument().getText(0,
 										e.getDocument().getLength()));
-			} catch (BadLocationException ble) {
-				handleError(ble);
-			}
+					} catch (BadLocationException ble) {
+						handleError(ble);
+					}
+					return null;
+				}
+			};
+			worker.execute();
 		}
 	};
 
 	private Observer adapterListener = new Observer() {
-		public void update(Observable o, Object arg) {
-			if (arg instanceof ClassPath) {
-				ClassPath cp = (ClassPath)arg;
-				//update the list
-				DefaultListModel model = ClassPathPanel.this.classpathListModel;
-				model.clear();
-				for (PathEntry entry : cp.getEntries()) {
-					model.addElement(entry);
-				}
-				
-				//update the text area
-				String classPathAsText = cp.toString();
-				if (!classPathAsText.equals(ClassPathPanel.this.classpathTextArea.getText())) {
-					ClassPathPanel.this.classpathTextArea.setText(classPathAsText);
-				}
+		public void update(Observable o, final Object arg) {
+			try {
+				SwingUtilities.invokeAndWait(new Runnable() {
+					public void run() {
+						if (arg instanceof ClassPath) {
+							ClassPath cp = (ClassPath) arg;
+							// update the list
+							DefaultListModel model = ClassPathPanel.this.classpathListModel;
+							model.clear();
+							for (PathEntry entry : cp.getEntries()) {
+								model.addElement(entry);
+							}
+
+							// update the text area
+							ClassPathPanel.this.classpathTextArea.setText(cp
+									.toString());
+						}
+					}
+				});
+			} catch (InterruptedException e) {
+				ClassPathPanel.this.handleError(e);
+			} catch (InvocationTargetException e) {
+				ClassPathPanel.this.handleError(e);
 			}
 		}
 	};
@@ -112,10 +131,12 @@ public class ClassPathPanel extends JPanel {
 		JPanel result = new JPanel();
 		result.setLayout(new BoxLayout(result, BoxLayout.Y_AXIS));
 		result.add(Box.createVerticalGlue());
-		 JButton addButton = new JButton(new AddAnEntryAction(this, getAdapter()));
-		 result.add(addButton);
-		 JButton removeButton = new JButton(new RemoveAnEntryAction(getAdapter()));
-		 result.add(removeButton);
+		JButton addButton = new JButton(
+				new AddAnEntryAction(this, getAdapter()));
+		result.add(addButton);
+		JButton removeButton = new JButton(
+				new RemoveAnEntryAction(getAdapter()));
+		result.add(removeButton);
 		result.add(Box.createVerticalGlue());
 		return result;
 	}
@@ -149,5 +170,19 @@ public class ClassPathPanel extends JPanel {
 
 	public void handleError(Throwable t) {
 		this.errorHandler.handleError(t);
+	}
+
+	public ErrorHandler getErrorHandler() {
+		if (this.errorHandler == null) {
+			this.errorHandler = new DefaultErrorHandler();
+		}
+		return this.errorHandler;
+	}
+
+	public void setErrorHandler(ErrorHandler handler) {
+		if (handler == null) {
+			throw new IllegalArgumentException("null is not a valid argument");
+		}
+		this.errorHandler = handler;
 	}
 }

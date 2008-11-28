@@ -65,4 +65,5 @@ public class TestClassPath {
 	public void equalsShouldReturnFalseWhenComparingWithAnInstanceOfADifferentClass() {
 		Assert.assertFalse(new ClassPath().equals(new Object()));
 	}
+	
 }

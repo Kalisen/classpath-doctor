@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 @SuppressWarnings("serial")
 public class ClassPathDoctorGUI extends JFrame {
@@ -23,6 +24,12 @@ public class ClassPathDoctorGUI extends JFrame {
 	}
 	
 	public static void main(String[] args) {
-		new ClassPathDoctorGUI();
+		SwingUtilities.invokeLater(new Runnable() {
+
+			public void run() {
+				new ClassPathDoctorGUI();
+			}
+			
+		});
 	}
 }

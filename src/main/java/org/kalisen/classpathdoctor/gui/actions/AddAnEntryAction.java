@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.kalisen.classpathdoctor.adapter.ClassPathAdapter;
 
 @SuppressWarnings("serial")
@@ -61,10 +62,22 @@ public class AddAnEntryAction extends AbstractAction {
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		fileChooser.setMultiSelectionEnabled(true);
 		fileChooser.showOpenDialog(getParent());
-		File[] files = fileChooser.getSelectedFiles();
-		for (File file : files) {
-			this.cpAdapter.addEntry(file.getPath());
-		}
+		final File[] files = fileChooser.getSelectedFiles();
+		final ClassPathAdapter adapter = this.cpAdapter; 
+		if (files.length > 0) {
+			SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+
+				@Override
+				protected Void doInBackground() throws Exception {
+					for (File file : files) {
+						adapter.addEntry(file.getPath());
+					}
+					return null;
+				}
+				
+			};
+			worker.execute();
+		};
 	}
 	
 	public static class JavaLibraryFileFilter extends FileFilter {

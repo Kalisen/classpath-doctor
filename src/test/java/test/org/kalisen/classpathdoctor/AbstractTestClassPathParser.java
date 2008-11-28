@@ -14,8 +14,11 @@ import org.kalisen.classpathdoctor.ClassPath;
 import org.kalisen.classpathdoctor.ClassPathParser;
 import org.kalisen.classpathdoctor.Environment;
 import org.kalisen.classpathdoctor.InvalidPathEntry;
+import org.kalisen.classpathdoctor.PathElement;
 import org.kalisen.classpathdoctor.PathEntry;
 import org.kalisen.classpathdoctor.PathResolver;
+import org.kalisen.classpathdoctor.PathSeparator;
+import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
 
@@ -34,13 +37,13 @@ public abstract class AbstractTestClassPathParser {
 	public void thePathSeparatorSetInTheConstructorShouldBeRetrievedThroughTheGetMethod() {
 		final String pathSeparator = "%";
 		ClassPathParser parser = new ClassPathParser(pathSeparator);
-		assertEquals(parser.getPathSeparator(), pathSeparator);
+		assertEquals(parser.getPathSeparatorAsString(), pathSeparator);
 	}
 
 	@Test
 	public void byDefaultThePathSeparatorShouldBeTheOneOfTheCurrentPlatform() {
 		ClassPathParser parser = new ClassPathParser();
-		assertEquals(parser.getPathSeparator(), System
+		assertEquals(parser.getPathSeparatorAsString(), System
 				.getProperty("path.separator"));
 	}
 
@@ -181,6 +184,110 @@ public abstract class AbstractTestClassPathParser {
 		assertEquals(iter.next().getPath(), "entry3" + getTestedFileSeparator()
 				+ "subentry3");
 		assertEquals(iter.next().getPath(), "entry4");
+	}
+
+	@Test
+	public void getPathElementsShouldReturnBothPathEntriesAndOtherPathElements() {
+		ClassPathParser parser = new ClassPathParser(getTestedPathSeparator());
+		String cpString = "entry1" + getTestedPathSeparator() + "entry2"
+				+ getTestedFileSeparator() + "subentry2"
+				+ getTestedPathSeparator() + "entry3"
+				+ getTestedPathSeparator();
+		ClassPath path = parser.parse(cpString);
+		List<PathElement> elements = path.getElements();
+		assertNotNull(elements);
+		assertEquals(elements.size(), 6);
+		Iterator<PathElement> iter = elements.iterator();
+		PathElement first = iter.next();
+		assertTrue(first instanceof PathEntry);
+		assertEquals(((PathEntry) first).getPath(), "entry1");
+		assertTrue(iter.next() instanceof PathSeparator);
+		PathElement second = iter.next();
+		assertTrue(second instanceof PathEntry);
+		assertEquals(((PathEntry) second).getPath(), "entry2"
+				+ getTestedFileSeparator() + "subentry2");
+		assertTrue(iter.next() instanceof PathSeparator);
+		PathElement third = iter.next();
+		assertTrue(third instanceof PathEntry);
+		assertEquals(((PathEntry) third).getPath(), "entry3");
+		assertTrue(iter.next() instanceof PathSeparator);
+	}
+
+	@Test
+	public void parserShouldHandleConsecutiveSeparators() {
+		ClassPathParser parser = new ClassPathParser(getTestedPathSeparator());
+		PathSeparator expectedSeparator = parser.getPathSeparator(); 
+		String cpString = getTestedPathSeparator() + "entry2"
+				+ getTestedPathSeparator() + getTestedPathSeparator()
+				+ "entry3";
+		ClassPath path = parser.parse(cpString);
+		List<PathElement> elements = path.getElements();
+		assertNotNull(elements);
+		assertEquals(elements.size(), 5);
+		Iterator<PathElement> iter = elements.iterator();
+		PathElement first = iter.next();
+		Assert.assertSame(first, expectedSeparator);
+		PathElement second = iter.next();
+		Assert.assertTrue(second instanceof PathEntry);
+		Assert.assertEquals(((PathEntry)second).getPath(), "entry2");
+		PathElement third = iter.next();
+		Assert.assertSame(third, expectedSeparator);
+		PathElement fourth = iter.next();
+		Assert.assertSame(fourth, expectedSeparator);
+		PathElement fifth = iter.next();
+		Assert.assertTrue(fifth instanceof PathEntry);
+		Assert.assertEquals(((PathEntry)fifth).getPath(), "entry3");
+	}
+
+	@Test
+	public void parserShouldHandleConsecutiveHeadingSeparators() {
+		ClassPathParser parser = new ClassPathParser(getTestedPathSeparator());
+		PathSeparator expectedSeparator = parser.getPathSeparator(); 
+		String cpString = getTestedPathSeparator() + getTestedPathSeparator()
+				+ "entry2" + getTestedPathSeparator() + "entry3"
+				+ getTestedPathSeparator();
+		ClassPath path = parser.parse(cpString);
+		List<PathElement> elements = path.getElements();
+		assertNotNull(elements);
+		assertEquals(elements.size(), 5);
+		Iterator<PathElement> iter = elements.iterator();
+		PathElement first = iter.next();
+		Assert.assertSame(first, expectedSeparator);
+		PathElement second = iter.next();
+		Assert.assertSame(second, expectedSeparator);
+		PathElement third = iter.next();
+		Assert.assertTrue(third instanceof PathEntry);
+		Assert.assertEquals(((PathEntry)third).getPath(), "entry2");
+		PathElement fourth = iter.next();
+		Assert.assertSame(fourth, expectedSeparator);
+		PathElement fifth = iter.next();
+		Assert.assertTrue(fifth instanceof PathEntry);
+		Assert.assertEquals(((PathEntry)fifth).getPath(), "entry3");
+	}
+
+	@Test
+	public void parserShouldHandleConsecutiveTrailingSeparators() {
+		ClassPathParser parser = new ClassPathParser(getTestedPathSeparator());
+		PathSeparator expectedSeparator = parser.getPathSeparator(); 
+		String cpString = "entry2" + getTestedPathSeparator() + "entry3"
+				+ getTestedPathSeparator() + getTestedPathSeparator();
+		ClassPath path = parser.parse(cpString);
+		List<PathElement> elements = path.getElements();
+		assertNotNull(elements);
+		assertEquals(elements.size(), 5);
+		Iterator<PathElement> iter = elements.iterator();
+		PathElement first = iter.next();
+		Assert.assertTrue(first instanceof PathEntry);
+		Assert.assertEquals(((PathEntry)first).getPath(), "entry2");
+		PathElement second = iter.next();
+		Assert.assertSame(second, expectedSeparator);
+		PathElement third = iter.next();
+		Assert.assertTrue(third instanceof PathEntry);
+		Assert.assertEquals(((PathEntry)third).getPath(), "entry3");
+		PathElement fourth = iter.next();
+		Assert.assertSame(fourth, expectedSeparator);
+		PathElement fifth = iter.next();
+		Assert.assertSame(fifth, expectedSeparator);
 	}
 
 	protected abstract String getTestedPathSeparator();

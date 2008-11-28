@@ -19,8 +19,12 @@ public class DefaultClassPathAdapter extends AbstractAdapter implements
 	}
 
 	public void setClassPath(String text) {
+		System.out.println("called setClasspath with text: " + text);
+		System.out.println("with current Classpath set to: "
+				+ this.currentClasspathAsText);
 		ClassPath newClasspath = parser.parse(text);
-		if (!newClasspath.equals(this.currentClasspath)) {
+		if (!this.currentClasspathAsText.equals(text)
+				&& !newClasspath.equals(this.currentClasspath)) {
 			this.currentClasspathAsText = text;
 			this.currentClasspath = newClasspath;
 			getNotifier().setChanged();
@@ -33,7 +37,7 @@ public class DefaultClassPathAdapter extends AbstractAdapter implements
 			PathEntry pathEntry = this.parser.getPathResolver().resolve(
 					entryPath);
 			if (this.currentClasspathAsText.length() > 0) {
-				this.currentClasspathAsText += this.parser.getPathSeparator();
+				this.currentClasspathAsText += this.parser.getPathSeparatorAsString();
 			}
 			this.currentClasspathAsText += entryPath;
 			this.currentClasspath.addEntry(pathEntry);

@@ -65,7 +65,7 @@ public class DirectoryPath extends AbstractFilePathEntry {
 	}
 	
 	protected String removeTrailingPathSeparator(String dirPath) {
-		if (dirPath != null && dirPath.endsWith(getFileSeparator())) {
+		if (dirPath != null && dirPath.length() > 1 && dirPath.endsWith(getFileSeparator())) {
 			dirPath = dirPath.substring(0, dirPath.length() - 1);
 		}
 		return dirPath;

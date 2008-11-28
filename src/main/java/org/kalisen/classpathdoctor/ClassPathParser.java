@@ -6,39 +6,48 @@ import java.util.ResourceBundle;
 
 public class ClassPathParser {
 
-    private String pathSeparator = null;
+    private PathSeparator pathSeparator = null;
     private String fileSeparator = null;
     private PathResolver pathResolver = null;
 
     public ClassPathParser() {
-        // default constructor
+        // default constructorSeparator
     }
 
     public ClassPathParser(String pathSeparator) {
-        setPathSeparator(pathSeparator);
+        setPathSeparator(new PathSeparator(pathSeparator));
     }
 
     public ClassPath parse(String stringClassPath) {
         ClassPath result = new ClassPath();
         if (stringClassPath != null && stringClassPath.trim().length() > 0) {
-            String[] bits = stringClassPath.split(getPathSeparator());
+            String[] bits = stringClassPath.split(getPathSeparatorAsString());
+            PathEntry currentEntry = null;
             for (int i = 0; i < bits.length; i++) {
             	if (bits[i] != null && bits[i].length() > 0) {
-            		result.addEntry(getPathResolver().resolve(bits[i]));
+            		currentEntry = getPathResolver().resolve(bits[i]);
+            		result.addEntry(currentEntry);
+            	}
+            	if (i < bits.length - 1) {
+            		result.addElement(getPathSeparator());
             	}
             }
         }
         return result;
     }
 
-    public String getPathSeparator() {
+    public PathSeparator getPathSeparator() {
         if (this.pathSeparator == null) {
-            this.pathSeparator = System.getProperty("path.separator");
+            this.pathSeparator = new PathSeparator(System.getProperty("path.separator"));
         }
         return this.pathSeparator;
     }
 
-    public void setPathSeparator(String pathSeparator) {
+    public String getPathSeparatorAsString() {
+        return getPathSeparator().toString();
+    }
+
+    public void setPathSeparator(PathSeparator pathSeparator) {
         if (pathSeparator == null) {
             throw new IllegalArgumentException(ResourceBundle.getBundle("UsersMessages")
                                                .getString("null.is.not.a.valid.argument"));

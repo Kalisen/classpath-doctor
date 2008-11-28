@@ -34,7 +34,6 @@ public abstract class AbstractTestDirectoryPath {
 		Assert.assertTrue(path1.equals(path2));
 	}
 
-	
 	public void hashCodesShouldBeEqualForTwoEqualObjects() {
 		DirectoryPath path1 = new DirectoryPath(".", getTestedFileSeparator());
 		DirectoryPath path2 = new DirectoryPath("." + getTestedFileSeparator(), getTestedFileSeparator());
