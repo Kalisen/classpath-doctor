@@ -1,7 +1,6 @@
 package org.kalisen.classpathdoctor.gui;
 
 import java.awt.BorderLayout;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -14,12 +13,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.PlainDocument;
+import javax.swing.text.DocumentFilter.FilterBypass;
 
-import org.jdesktop.swingworker.SwingWorker;
 import org.kalisen.classpathdoctor.ClassPath;
 import org.kalisen.classpathdoctor.PathEntry;
 import org.kalisen.classpathdoctor.adapter.ClassPathAdapter;
@@ -55,48 +56,37 @@ public class ClassPathPanel extends JPanel {
 		}
 
 		private void notifyAdapter(final DocumentEvent e) {
-			SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-
-				@Override
-				protected Void doInBackground() throws Exception {
-					try {
-						getAdapter().setClassPath(
+			try {
+				getAdapter()
+						.setClassPathAsText(
 								e.getDocument().getText(0,
 										e.getDocument().getLength()));
-					} catch (BadLocationException ble) {
-						handleError(ble);
-					}
-					return null;
-				}
-			};
-			worker.execute();
+			} catch (BadLocationException ble) {
+				handleError(ble);
+			}
 		}
 	};
 
-	private Observer adapterListener = new Observer() {
+	private Observer adapterListenerForList = new Observer() {
 		public void update(Observable o, final Object arg) {
-			try {
-				SwingUtilities.invokeAndWait(new Runnable() {
-					public void run() {
-						if (arg instanceof ClassPath) {
-							ClassPath cp = (ClassPath) arg;
-							// update the list
-							DefaultListModel model = ClassPathPanel.this.classpathListModel;
-							model.clear();
-							for (PathEntry entry : cp.getEntries()) {
-								model.addElement(entry);
-							}
+			if (arg instanceof ClassPath) {
+				ClassPath cp = (ClassPath) arg;
+				DefaultListModel model = ClassPathPanel.this.classpathListModel;
+				model.clear();
+				for (PathEntry entry : cp.getEntries()) {
+					model.addElement(entry);
+				}
+				repaint();
+			}
+		}
+	};
 
-							// update the text area
-							ClassPathPanel.this.classpathTextArea.setText(cp
-									.toString());
-						}
-					}
-				});
-			} catch (InterruptedException e) {
-				ClassPathPanel.this.handleError(e);
-			} catch (InvocationTargetException e) {
-				ClassPathPanel.this.handleError(e);
+	private Observer adapterListenerForTextArea = new Observer() {
+		public void update(Observable o, final Object arg) {
+			if (!ClassPathPanel.this.classpathTextArea.getText().equals(
+					getAdapter().getClassPathAsText())) {
+				ClassPathPanel.this.classpathTextArea.setText(getAdapter()
+						.getClassPathAsText());
 			}
 		}
 	};
@@ -124,7 +114,8 @@ public class ClassPathPanel extends JPanel {
 	private void initListeners() {
 		this.classpathTextArea.getDocument().addDocumentListener(
 				this.textAreaListener);
-		getAdapter().addListener(this.adapterListener);
+		getAdapter().addListener(this.adapterListenerForList);
+		getAdapter().addListener(this.adapterListenerForTextArea);
 	}
 
 	private JPanel buildButtonPanel() {
@@ -143,6 +134,39 @@ public class ClassPathPanel extends JPanel {
 
 	private JTextArea buildTextComponent() {
 		JTextArea result = new JTextArea();
+		PlainDocument doc = new PlainDocument();
+		doc.setDocumentFilter(new DocumentFilter() {
+
+			@Override
+			public void remove(FilterBypass fb, int offset, int length)
+					throws BadLocationException {
+				super.remove(fb, offset, length);
+			}
+
+			@Override
+			public void replace(FilterBypass fb, int offset, int length,
+					String text, AttributeSet attrs)
+					throws BadLocationException {
+				if (length > 0) {
+					fb.remove(offset, length);
+				}
+				insertString(fb, offset, text, null);
+			}
+
+			@Override
+			public void insertString(FilterBypass fb, int offset,
+					String string, AttributeSet attr)
+					throws BadLocationException {
+				System.out.println("...");
+				System.out.println(string);
+				System.out.println("Offset: " + offset);
+				System.out.println("Offset: " + fb.getDocument().getLength());
+				System.out.println(fb.getDocument().getText(0,
+						fb.getDocument().getLength()));
+				super.insertString(fb, offset, string, attr);
+			}
+		});
+		result.setDocument(doc);
 		result.setWrapStyleWord(true);
 		result.setLineWrap(true);
 		return result;

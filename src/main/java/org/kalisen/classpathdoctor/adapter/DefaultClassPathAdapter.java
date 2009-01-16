@@ -8,6 +8,12 @@ import org.kalisen.common.adapter.AbstractAdapter;
 public class DefaultClassPathAdapter extends AbstractAdapter implements
 		ClassPathAdapter {
 
+	private static int counter = 0;
+
+	private static synchronized final int getCounter() {
+		return counter++;
+	}
+
 	private ClassPathParser parser = null;
 	private ClassPath currentClasspath = null;
 	private String currentClasspathAsText = null;
@@ -18,32 +24,56 @@ public class DefaultClassPathAdapter extends AbstractAdapter implements
 		this.currentClasspathAsText = "";
 	}
 
-	public void setClassPath(String text) {
-		System.out.println("called setClasspath with text: " + text);
-		System.out.println("with current Classpath set to: "
-				+ this.currentClasspathAsText);
-		ClassPath newClasspath = parser.parse(text);
-		if (!this.currentClasspathAsText.equals(text)
-				&& !newClasspath.equals(this.currentClasspath)) {
+	public void setClassPathAsText(String text) {
+		if (text == null) {
+			throw new IllegalArgumentException("null is not a valid argument");
+		}
+		int counter = getCounter();
+		System.out.println(counter + " - called setClasspath with new = "
+				+ text + " old = " + this.currentClasspathAsText);
+		if (!this.currentClasspathAsText.equals(text)) {
 			this.currentClasspathAsText = text;
-			this.currentClasspath = newClasspath;
-			getNotifier().setChanged();
-			getNotifier().notifyObservers(this.currentClasspath);
+			ClassPath newClasspath = parser.parse(text);
+			if (!this.currentClasspath.equals(newClasspath)) {
+				this.currentClasspath = newClasspath;
+				getNotifier().setChanged();
+				getNotifier().notifyObservers(this.currentClasspath);
+			}
 		}
 	}
 
-	public void addEntry(String entryPath) {
-		if (entryPath != null && entryPath.length() > 0) {
-			PathEntry pathEntry = this.parser.getPathResolver().resolve(
-					entryPath);
-			if (this.currentClasspathAsText.length() > 0) {
-				this.currentClasspathAsText += this.parser.getPathSeparatorAsString();
-			}
-			this.currentClasspathAsText += entryPath;
-			this.currentClasspath.addEntry(pathEntry);
-			getNotifier().setChanged();
-			getNotifier().notifyObservers(this.currentClasspath);
+	public String getClassPathAsText() {
+		return this.currentClasspathAsText;
+	}
+
+	public void setClassPath(ClassPath cp) {
+		if (cp == null) {
+			throw new IllegalArgumentException("null is not a valid argument");
 		}
+		this.currentClasspath = cp;
+		this.currentClasspathAsText = cp.toString();
+		getNotifier().setChanged();
+		getNotifier().notifyObservers(this.currentClasspath);
+	}
+	
+	public ClassPath getClassPath() {
+		return this.currentClasspath;
+	}
+	
+	public void addEntry(String entryPath) {
+		if (entryPath == null) {
+			throw new IllegalArgumentException("null is not a valid argument");
+		}
+		PathEntry pathEntry = this.parser.getPathResolver().resolve(
+				entryPath);
+		if (this.currentClasspathAsText.length() > 0) {
+			this.currentClasspathAsText += this.parser
+					.getPathSeparatorAsString();
+		}
+		this.currentClasspathAsText += entryPath;
+		this.currentClasspath.addEntry(pathEntry);
+		getNotifier().setChanged();
+		getNotifier().notifyObservers(this.currentClasspath);
 	}
 
 	public void removeEntry(String entryPath) {

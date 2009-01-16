@@ -63,23 +63,14 @@ public class AddAnEntryAction extends AbstractAction {
 		fileChooser.setMultiSelectionEnabled(true);
 		fileChooser.showOpenDialog(getParent());
 		final File[] files = fileChooser.getSelectedFiles();
-		final ClassPathAdapter adapter = this.cpAdapter; 
+		final ClassPathAdapter adapter = this.cpAdapter;
 		if (files.length > 0) {
-			SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-
-				@Override
-				protected Void doInBackground() throws Exception {
-					for (File file : files) {
-						adapter.addEntry(file.getPath());
-					}
-					return null;
-				}
-				
-			};
-			worker.execute();
-		};
+			for (File file : files) {
+				adapter.addEntry(file.getPath());
+			}
+		}
 	}
-	
+
 	public static class JavaLibraryFileFilter extends FileFilter {
 		@Override
 		public String getDescription() {
@@ -89,9 +80,8 @@ public class AddAnEntryAction extends AbstractAction {
 		@Override
 		public boolean accept(File f) {
 			return f != null
-					&& (f.isDirectory() 
-							|| f.getName().endsWith(".jar") || 
-							f.getName().endsWith(".zip"));
+					&& (f.isDirectory() || f.getName().endsWith(".jar") || f
+							.getName().endsWith(".zip"));
 		}
 	}
 }
