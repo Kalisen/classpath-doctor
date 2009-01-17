@@ -249,7 +249,7 @@ public abstract class AbstractTestClassPathParser {
 		ClassPath path = parser.parse(cpString);
 		List<PathElement> elements = path.getElements();
 		assertNotNull(elements);
-		assertEquals(elements.size(), 5);
+		assertEquals(elements.size(), 6);
 		Iterator<PathElement> iter = elements.iterator();
 		PathElement first = iter.next();
 		Assert.assertSame(first, expectedSeparator);
@@ -263,6 +263,8 @@ public abstract class AbstractTestClassPathParser {
 		PathElement fifth = iter.next();
 		Assert.assertTrue(fifth instanceof PathEntry);
 		Assert.assertEquals(((PathEntry)fifth).getPath(), "entry3");
+		PathElement sixth = iter.next();
+		Assert.assertSame(sixth, expectedSeparator);
 	}
 
 	@Test
