@@ -19,7 +19,6 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
-import javax.swing.text.DocumentFilter.FilterBypass;
 
 import org.kalisen.classpathdoctor.ClassPath;
 import org.kalisen.classpathdoctor.PathEntry;
@@ -136,13 +135,6 @@ public class ClassPathPanel extends JPanel {
 		JTextArea result = new JTextArea();
 		PlainDocument doc = new PlainDocument();
 		doc.setDocumentFilter(new DocumentFilter() {
-
-			@Override
-			public void remove(FilterBypass fb, int offset, int length)
-					throws BadLocationException {
-				super.remove(fb, offset, length);
-			}
-
 			@Override
 			public void replace(FilterBypass fb, int offset, int length,
 					String text, AttributeSet attrs)
@@ -151,19 +143,6 @@ public class ClassPathPanel extends JPanel {
 					fb.remove(offset, length);
 				}
 				insertString(fb, offset, text, null);
-			}
-
-			@Override
-			public void insertString(FilterBypass fb, int offset,
-					String string, AttributeSet attr)
-					throws BadLocationException {
-				System.out.println("...");
-				System.out.println(string);
-				System.out.println("Offset: " + offset);
-				System.out.println("Offset: " + fb.getDocument().getLength());
-				System.out.println(fb.getDocument().getText(0,
-						fb.getDocument().getLength()));
-				super.insertString(fb, offset, string, attr);
 			}
 		});
 		result.setDocument(doc);

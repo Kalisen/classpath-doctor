@@ -80,7 +80,7 @@ public abstract class AbstractTestClassPathParser {
 	}
 
 	@Test
-	public void parsingAnSpaceInFrontOfASeparatorShouldReturnAClasspathWithASingleInvalidEntry() {
+	public void parsingASpaceInFrontOfASeparatorShouldReturnAClasspathWithASingleInvalidEntry() {
 		ClassPathParser parser = new ClassPathParser(getTestedPathSeparator());
 		ClassPath path = parser.parse(" " + getTestedPathSeparator());
 		List<PathEntry> entries = path.getEntries();

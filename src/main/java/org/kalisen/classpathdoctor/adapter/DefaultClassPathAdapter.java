@@ -8,12 +8,6 @@ import org.kalisen.common.adapter.AbstractAdapter;
 public class DefaultClassPathAdapter extends AbstractAdapter implements
 		ClassPathAdapter {
 
-	private static int counter = 0;
-
-	private static synchronized final int getCounter() {
-		return counter++;
-	}
-
 	private ClassPathParser parser = null;
 	private ClassPath currentClasspath = null;
 	private String currentClasspathAsText = null;
@@ -28,9 +22,6 @@ public class DefaultClassPathAdapter extends AbstractAdapter implements
 		if (text == null) {
 			throw new IllegalArgumentException("null is not a valid argument");
 		}
-		int counter = getCounter();
-		System.out.println(counter + " - called setClasspath with new = "
-				+ text + " old = " + this.currentClasspathAsText);
 		if (!this.currentClasspathAsText.equals(text)) {
 			this.currentClasspathAsText = text;
 			ClassPath newClasspath = parser.parse(text);
