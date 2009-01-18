@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 
-import org.jdesktop.swingworker.SwingWorker;
 import org.kalisen.classpathdoctor.adapter.ClassPathAdapter;
 
 @SuppressWarnings("serial")

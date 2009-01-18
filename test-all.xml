@@ -1,0 +1,7 @@
+<suite name="TestAllPackages" verbose="1">
+	<test name="All Tests">
+		<packages>
+			<package name="test.*" />
+		</packages>
+	</test>
+</suite> 

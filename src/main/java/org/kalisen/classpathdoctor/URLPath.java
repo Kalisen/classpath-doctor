@@ -18,7 +18,7 @@ public class URLPath implements PathEntry {
     }
 
     public String getPath() {
-        return this.url.getPath();
+        return this.url.toString();
     }
 
     public boolean exists() {

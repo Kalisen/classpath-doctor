@@ -125,7 +125,7 @@ public class ClassPathPanel extends JPanel {
 				new AddAnEntryAction(this, getAdapter()));
 		result.add(addButton);
 		JButton removeButton = new JButton(
-				new RemoveAnEntryAction(getAdapter()));
+				new RemoveAnEntryAction(this.classpathList, getAdapter()));
 		result.add(removeButton);
 		result.add(Box.createVerticalGlue());
 		return result;
