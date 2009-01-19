@@ -2,14 +2,13 @@
 package org.kalisen.classpathdoctor;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 
 public class ClassPath {
     private List<PathEntry> entries = null;
     private ClassPathFormatter formatter = null;
-	private List<PathElement> elements = null;
 
     public ClassPath() {
         setEntries(new ArrayList<PathEntry>());
@@ -28,13 +27,7 @@ public class ClassPath {
             throw new IllegalArgumentException(ResourceBundle.getBundle("UsersMessages")
                                                .getString("null.is.not.a.valid.argument"));
         }
-        this.entries = new ArrayList<PathEntry>();
-        this.elements = new ArrayList<PathElement>();
-        for (PathEntry pathEntry : entries) {
-            this.entries.add(pathEntry);
-            this.elements.add(pathEntry);
-            this.elements.add(pathEntry);
-		}
+        this.entries = new ArrayList<PathEntry>(entries);
     }
 
     public void addEntry(PathEntry pathEntry) {
@@ -43,37 +36,7 @@ public class ClassPath {
                                                .getString("null.is.not.a.valid.argument"));
         }
         this.entries.add(pathEntry);
-        addElement(pathEntry);
     }
-
-	public List<PathElement> getElements() {
-        return new ArrayList<PathElement>(this.elements);
-	}
-    
-    public void setElements(List<? extends PathElement> elements) {
-        if (elements == null) {
-            throw new IllegalArgumentException(ResourceBundle.getBundle("UsersMessages")
-                                               .getString("null.is.not.a.valid.argument"));
-        }
-        this.elements = new ArrayList<PathElement>(elements);
-    }
-
-    public void addElement(PathElement pathElement) {
-        if (pathElement == null) {
-            throw new IllegalArgumentException(ResourceBundle.getBundle("UsersMessages")
-                                               .getString("null.is.not.a.valid.argument"));
-        }
-        this.elements.add(pathElement);
-    }
-    
-    public void removeElement(PathElement pathElement) throws NoSuchElementException {
-        if (pathElement == null) {
-            throw new IllegalArgumentException(ResourceBundle.getBundle("UsersMessages")
-                                               .getString("null.is.not.a.valid.argument"));
-        }
-        this.elements.remove(pathElement);
-    }
-
     
     @Override
     public String toString() {
@@ -112,6 +75,42 @@ public class ClassPath {
 		return true;
 	}
 
+	public boolean equalsIgnoreEmptyEntries(Object obj) {
+		if (obj == null || obj.getClass() != getClass()) {
+			return false;
+		}
+		ClassPath other = (ClassPath) obj;
+		int entriesCount = this.entries.size();
+		if (entriesCount == 0) {
+			for (PathEntry otherEntry : other.entries) {
+				if (!otherEntry.equals(EmptyPathEntry.INSTANCE)) {
+					return false;
+				}
+			}
+		} else {
+			int i = 0;
+			int j= 0;
+			PathEntry thisEntry = null;
+			PathEntry otherEntry = null;
+			while (i < entriesCount) {
+				thisEntry = this.entries.get(i);
+				if (thisEntry.equals(EmptyPathEntry.INSTANCE)) {
+					i++;
+				} else {
+					otherEntry = other.entries.get(j);
+					if (!otherEntry.equals(EmptyPathEntry.INSTANCE)) {
+						if (!thisEntry.equals(otherEntry)) {
+							return false;
+						}
+						i++;
+					}
+					j++;
+				}
+			}
+		}
+		return true;
+	}
+
 	@Override
 	public int hashCode() {
 		return toString().hashCode();
@@ -121,7 +120,6 @@ public class ClassPath {
 		if (pathEntry == null) {
 			throw new IllegalArgumentException("null is not a valid argument");
 		}
-		this.elements.remove(pathEntry);
 		this.entries.remove(pathEntry);
 	}
 

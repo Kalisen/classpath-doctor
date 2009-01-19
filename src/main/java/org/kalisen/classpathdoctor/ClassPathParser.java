@@ -25,18 +25,15 @@ public class ClassPathParser {
 			trailingSepCount -= (bits.length - 1) * pathSeparator.toString().length();
 			PathEntry currentEntry = null;
 			for (int i = 0; i < bits.length; i++) {
-				if (bits[i] != null && bits[i].length() > 0) {
+				if (bits[i] != null) {
 					currentEntry = getPathResolver().resolve(bits[i]);
 					result.addEntry(currentEntry);
 					trailingSepCount -= bits[i].length();
 				}
-				if (i < bits.length - 1) {
-					result.addElement(pathSeparator);
-				}
 			}
 			// adding trailing separators if any
 			for (int i = 0; i < trailingSepCount; i++) {
-				result.addElement(pathSeparator);
+				result.addEntry(EmptyPathEntry.INSTANCE);
 			}
 		}
 		return result;

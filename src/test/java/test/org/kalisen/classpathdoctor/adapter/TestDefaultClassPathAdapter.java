@@ -5,7 +5,7 @@ import java.util.Observer;
 
 import org.kalisen.classpathdoctor.ClassPath;
 import org.kalisen.classpathdoctor.DirectoryPath;
-import org.kalisen.classpathdoctor.PathSeparator;
+import org.kalisen.classpathdoctor.EmptyPathEntry;
 import org.kalisen.classpathdoctor.adapter.DefaultClassPathAdapter;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -32,7 +32,7 @@ public class TestDefaultClassPathAdapter {
 				"The Observer should have been called");
 	}
 
-	public void setClassPathAsTextShouldNotTriggerAnEventIfTheOnlyDifferenceIsASeparatorAtTheEnd() {
+	public void setClassPathAsTextShouldNotTriggerAnEventIfTheOnlyDifferenceIsAnEmptyEntryAtTheEnd() {
 		MockObserver obs = new MockObserver(null, false);
 		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
 		adapter.setClassPathAsText(CURRENT_DIR);
@@ -40,7 +40,7 @@ public class TestDefaultClassPathAdapter {
 		adapter.setClassPathAsText(CURRENT_DIR + PATH_SEPARATOR);
 	}
 
-	public void setClassPathAsTextShouldNotTriggerAnEventIfTheOnlyDifferenceIsASeparatorAtTheBeginning() {
+	public void setClassPathAsTextShouldNotTriggerAnEventIfTheOnlyDifferenceIsAnEmptyEntryAtTheBeginning() {
 		MockObserver obs = new MockObserver(null, false);
 		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
 		adapter.setClassPathAsText(CURRENT_DIR);
@@ -48,7 +48,7 @@ public class TestDefaultClassPathAdapter {
 		adapter.setClassPathAsText(PATH_SEPARATOR + CURRENT_DIR);
 	}
 
-	public void setClassPathAsTextShouldNotTriggerAnEventIfTheOnlyDifferenceIsASeparatorInTheMiddle() {
+	public void setClassPathAsTextShouldNotTriggerAnEventIfTheOnlyDifferenceIsAnEmptyEntryInTheMiddle() {
 		MockObserver obs = new MockObserver(null, false);
 		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
 		adapter.setClassPathAsText(CURRENT_DIR + PATH_SEPARATOR + "."
@@ -122,7 +122,7 @@ public class TestDefaultClassPathAdapter {
 				"The Observer should have been called");
 	}
 
-	public void setClassPathShouldNotTriggerAnEventIfTheOnlyDifferenceIsASeparatorAtTheEnd() {
+	public void setClassPathShouldNotTriggerAnEventIfTheOnlyDifferenceIsAnEmptyEntryAtTheEnd() {
 		MockObserver obs = new MockObserver(null, false);
 		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
 		ClassPath cp = new ClassPath();
@@ -131,11 +131,11 @@ public class TestDefaultClassPathAdapter {
 		adapter.addListener(obs);
 		ClassPath newCP = new ClassPath();
 		newCP.addEntry(new DirectoryPath("."));
-		newCP.addElement(new PathSeparator(PATH_SEPARATOR));
+		newCP.addEntry(EmptyPathEntry.INSTANCE);
 		adapter.setClassPath(newCP);
 	}
 
-	public void setClassPathShouldNotTriggerAnEventIfTheOnlyDifferenceIsASeparatorAtTheBeginning() {
+	public void setClassPathShouldNotTriggerAnEventIfTheOnlyDifferenceIsAnEmptyEntryAtTheBeginning() {
 		MockObserver obs = new MockObserver(null, false);
 		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
 		ClassPath cp = new ClassPath();
@@ -143,24 +143,22 @@ public class TestDefaultClassPathAdapter {
 		adapter.setClassPath(cp);
 		adapter.addListener(obs);
 		ClassPath newCP = new ClassPath();
-		newCP.addElement(new PathSeparator(PATH_SEPARATOR));
+		newCP.addEntry(EmptyPathEntry.INSTANCE);
 		newCP.addEntry(new DirectoryPath("."));
 		adapter.setClassPath(newCP);
 	}
 
-	public void setClassPathShouldNotTriggerAnEventIfTheOnlyDifferenceIsASeparatorInTheMiddle() {
+	public void setClassPathShouldNotTriggerAnEventIfTheOnlyDifferenceIsAnEmptyEntryInTheMiddle() {
 		MockObserver obs = new MockObserver(null, false);
 		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
 		ClassPath cp = new ClassPath();
 		cp.addEntry(new DirectoryPath("."));
-		cp.addElement(new PathSeparator(PATH_SEPARATOR));
 		cp.addEntry(new DirectoryPath("."));
 		adapter.setClassPath(cp);
 		adapter.addListener(obs);
 		ClassPath newCP = new ClassPath();
 		newCP.addEntry(new DirectoryPath("."));
-		newCP.addElement(new PathSeparator(PATH_SEPARATOR));
-		newCP.addElement(new PathSeparator(PATH_SEPARATOR));
+		newCP.addEntry(EmptyPathEntry.INSTANCE);
 		newCP.addEntry(new DirectoryPath("."));
 		adapter.setClassPath(newCP);
 	}
@@ -181,7 +179,7 @@ public class TestDefaultClassPathAdapter {
 
 		public void update(Observable o, Object arg) {
 			if (this.isCallExpected) {
-				Assert.assertEquals(expectedClasspath, arg);
+				Assert.assertEquals(this.expectedClasspath, arg);
 			} else {
 				Assert.fail("Unexpected call to the observer");
 			}

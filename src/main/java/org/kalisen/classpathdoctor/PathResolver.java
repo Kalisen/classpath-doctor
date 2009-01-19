@@ -24,6 +24,8 @@ public class PathResolver {
         if (path == null) {
             result = new InvalidPathEntry(path, ResourceBundle.getBundle("UsersMessages")
                                           .getString("null.is.not.a.valid.path"));
+        } else if ("".equals(path)) {
+        	result = EmptyPathEntry.INSTANCE;
         } else {
             String expandedPath = null;
             expandedPath = getVariableResolver().resolve(path);
