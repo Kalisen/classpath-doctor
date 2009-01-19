@@ -17,8 +17,8 @@ public class TestPathSeparator {
 
 	@Factory
 	public Object[] createEqualHashCodeTest() {
-		Object[] result = new Object[] { new TestEqualHelper(
-				new PathSeparator(";"), new PathSeparator(";"), new PathSeparator(";"))};
+		Object[] result = new Object[] { new TestEqualHelper(new PathSeparator(
+				";"), new PathSeparator(";"), new PathSeparator(";")) };
 		return result;
 	}
 }

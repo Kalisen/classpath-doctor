@@ -12,7 +12,8 @@ import org.testng.annotations.Test;
 public class TestJavaLibraryFileFilter {
 
 	public void theFilterShouldAcceptDirectories() throws Exception {
-		File temp = File.createTempFile(this.getClass().getSimpleName(), ".tmp");
+		File temp = File
+				.createTempFile(this.getClass().getSimpleName(), ".tmp");
 		File dir = temp.getParentFile();
 		temp.deleteOnExit();
 		FileFilter filter = new AddAnEntryAction.JavaLibraryFileFilter();

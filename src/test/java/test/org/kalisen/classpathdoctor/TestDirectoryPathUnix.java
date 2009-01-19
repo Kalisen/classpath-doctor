@@ -11,7 +11,7 @@ public class TestDirectoryPathUnix extends AbstractTestDirectoryPath {
 	protected String getTestedFileSeparator() {
 		return "/";
 	}
-	
+
 	public void equalsShouldNotIgnoreTheTrailingFileSeparatorWhenItHappenToBeTheRootDirectory() {
 		DirectoryPath path1 = new DirectoryPath("/", getTestedFileSeparator());
 		DirectoryPath path2 = new DirectoryPath("", getTestedFileSeparator());

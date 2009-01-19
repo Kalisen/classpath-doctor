@@ -1,5 +1,5 @@
 package org.kalisen.classpathdoctor;
 
 public interface VariableResolver {
-    String resolve(String path);
+	String resolve(String path);
 }

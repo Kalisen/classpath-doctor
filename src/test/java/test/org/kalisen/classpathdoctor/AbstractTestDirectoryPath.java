@@ -11,7 +11,7 @@ public abstract class AbstractTestDirectoryPath {
 		DirectoryPath path1 = new DirectoryPath(".", getTestedFileSeparator());
 		Assert.assertTrue(path1.equals(path1));
 	}
-	
+
 	public void equalsIsTransitive() {
 		DirectoryPath path1 = new DirectoryPath(".", getTestedFileSeparator());
 		DirectoryPath path2 = new DirectoryPath(".", getTestedFileSeparator());
@@ -30,17 +30,19 @@ public abstract class AbstractTestDirectoryPath {
 
 	public void equalsShouldIgnoreTheTrailingFileSeparator() {
 		DirectoryPath path1 = new DirectoryPath(".", getTestedFileSeparator());
-		DirectoryPath path2 = new DirectoryPath("." + getTestedFileSeparator(), getTestedFileSeparator());
+		DirectoryPath path2 = new DirectoryPath("." + getTestedFileSeparator(),
+				getTestedFileSeparator());
 		Assert.assertTrue(path1.equals(path2));
 	}
 
 	public void hashCodesShouldBeEqualForTwoEqualObjects() {
 		DirectoryPath path1 = new DirectoryPath(".", getTestedFileSeparator());
-		DirectoryPath path2 = new DirectoryPath("." + getTestedFileSeparator(), getTestedFileSeparator());
+		DirectoryPath path2 = new DirectoryPath("." + getTestedFileSeparator(),
+				getTestedFileSeparator());
 		Assert.assertTrue(path1.equals(path2));
 		Assert.assertEquals(path1.hashCode(), path2.hashCode());
 	}
-	
+
 	protected abstract String getTestedFileSeparator();
 
 }

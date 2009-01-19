@@ -44,7 +44,7 @@ public class AddAnEntryAction extends AbstractAction {
 	}
 
 	protected JPanel getParent() {
-		return parent;
+		return this.parent;
 	}
 
 	protected void setParent(JPanel parent) {

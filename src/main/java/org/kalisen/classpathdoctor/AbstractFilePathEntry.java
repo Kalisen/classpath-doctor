@@ -60,30 +60,39 @@ public abstract class AbstractFilePathEntry implements PathEntry {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((path == null) ? 0 : path.hashCode());
-		result = prime * result + ((version == null) ? 0 : version.hashCode());
+		result = prime * result
+				+ ((this.path == null) ? 0 : this.path.hashCode());
+		result = prime * result
+				+ ((this.version == null) ? 0 : this.version.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		AbstractFilePathEntry other = (AbstractFilePathEntry) obj;
-		if (path == null) {
-			if (other.path != null)
+		if (this.path == null) {
+			if (other.path != null) {
 				return false;
-		} else if (!path.equals(other.path))
+			}
+		} else if (!this.path.equals(other.path)) {
 			return false;
-		if (version == null) {
-			if (other.version != null)
+		}
+		if (this.version == null) {
+			if (other.version != null) {
 				return false;
-		} else if (!version.equals(other.version))
+			}
+		} else if (!this.version.equals(other.version)) {
 			return false;
+		}
 		return true;
 	}
 
@@ -101,5 +110,4 @@ public abstract class AbstractFilePathEntry implements PathEntry {
 		this.fileSeparator = fileSeparator;
 	}
 
-	
 }

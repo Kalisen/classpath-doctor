@@ -1,47 +1,45 @@
-
 package org.kalisen.classpathdoctor;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class ClassPath {
-    private List<PathEntry> entries = null;
-    private ClassPathFormatter formatter = null;
+	private List<PathEntry> entries = null;
+	private ClassPathFormatter formatter = null;
 
-    public ClassPath() {
-        setEntries(new ArrayList<PathEntry>());
-    }
+	public ClassPath() {
+		setEntries(new ArrayList<PathEntry>());
+	}
 
-    public ClassPath(ArrayList<PathEntry> entries) {
-        setEntries(entries);
-    }
+	public ClassPath(ArrayList<PathEntry> entries) {
+		setEntries(entries);
+	}
 
-    public List<PathEntry> getEntries() {
-        return new ArrayList<PathEntry>(this.entries);
-    }
+	public List<PathEntry> getEntries() {
+		return new ArrayList<PathEntry>(this.entries);
+	}
 
-    public void setEntries(List<? extends PathEntry> entries) {
-        if (entries == null) {
-            throw new IllegalArgumentException(ResourceBundle.getBundle("UsersMessages")
-                                               .getString("null.is.not.a.valid.argument"));
-        }
-        this.entries = new ArrayList<PathEntry>(entries);
-    }
+	public void setEntries(List<? extends PathEntry> entries) {
+		if (entries == null) {
+			throw new IllegalArgumentException(ResourceBundle.getBundle(
+					"UsersMessages").getString("null.is.not.a.valid.argument"));
+		}
+		this.entries = new ArrayList<PathEntry>(entries);
+	}
 
-    public void addEntry(PathEntry pathEntry) {
-        if (pathEntry == null) {
-            throw new IllegalArgumentException(ResourceBundle.getBundle("UsersMessages")
-                                               .getString("null.is.not.a.valid.argument"));
-        }
-        this.entries.add(pathEntry);
-    }
-    
-    @Override
-    public String toString() {
-    	 return getFormatter().format(this);
-    }
+	public void addEntry(PathEntry pathEntry) {
+		if (pathEntry == null) {
+			throw new IllegalArgumentException(ResourceBundle.getBundle(
+					"UsersMessages").getString("null.is.not.a.valid.argument"));
+		}
+		this.entries.add(pathEntry);
+	}
+
+	@Override
+	public String toString() {
+		return getFormatter().format(this);
+	}
 
 	public ClassPathFormatter getFormatter() {
 		if (this.formatter == null) {
@@ -89,7 +87,7 @@ public class ClassPath {
 			}
 		} else {
 			int i = 0;
-			int j= 0;
+			int j = 0;
 			PathEntry thisEntry = null;
 			PathEntry otherEntry = null;
 			while (i < entriesCount) {

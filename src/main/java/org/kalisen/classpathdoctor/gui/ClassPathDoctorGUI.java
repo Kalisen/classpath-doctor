@@ -9,8 +9,8 @@ import javax.swing.SwingUtilities;
 
 @SuppressWarnings("serial")
 public class ClassPathDoctorGUI extends JFrame {
-	
-	public ClassPathDoctorGUI() {	
+
+	public ClassPathDoctorGUI() {
 		super("ClassPath Doctor");
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = screenSize.width / 3;
@@ -22,14 +22,14 @@ public class ClassPathDoctorGUI extends JFrame {
 		getContentPane().add(new ClassPathPanel(), BorderLayout.CENTER);
 		setVisible(true);
 	}
-	
+
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 
 			public void run() {
 				new ClassPathDoctorGUI();
 			}
-			
+
 		});
 	}
 }

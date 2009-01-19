@@ -19,7 +19,7 @@ public class TestClassPath {
 
 	private final static PathEntry ENTRY = new DirectoryPath(".");
 	private final static PathEntry ENTRY2 = new DirectoryPath("..");
-	
+
 	public void testSettingEntries() {
 		ClassPath cp = new ClassPath();
 		ArrayList<PathEntry> newEntries = new ArrayList<PathEntry>();
@@ -35,7 +35,6 @@ public class TestClassPath {
 		Assert.assertEquals(iterOnEntries.next(), ENTRY2);
 		Assert.assertEquals(iterOnEntries.next(), ENTRY);
 	}
-	
 
 	public void testAddEntry() {
 		ClassPath cp = new ClassPath();
@@ -59,7 +58,7 @@ public class TestClassPath {
 		Assert.assertEquals(iterOnEntries.next(), ENTRY2);
 		Assert.assertEquals(iterOnEntries.next(), ENTRY);
 	}
-	
+
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void addingANullEntryWillThrowAnIllegalArgumentException() {
 		new ClassPath().addEntry(null);

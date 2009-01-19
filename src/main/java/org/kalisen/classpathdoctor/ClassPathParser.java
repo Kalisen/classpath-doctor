@@ -22,7 +22,8 @@ public class ClassPathParser {
 			int trailingSepCount = stringClassPath.length();
 			PathSeparator pathSeparator = getPathSeparator();
 			String[] bits = stringClassPath.split(pathSeparator.toString());
-			trailingSepCount -= (bits.length - 1) * pathSeparator.toString().length();
+			trailingSepCount -= (bits.length - 1)
+					* pathSeparator.toString().length();
 			PathEntry currentEntry = null;
 			for (int i = 0; i < bits.length; i++) {
 				if (bits[i] != null) {

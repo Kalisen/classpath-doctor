@@ -12,7 +12,7 @@ public class TestAbstractFilePathEntry {
 		AbstractFilePathEntry entry1 = new JarPath("./dummy.jar");
 		Assert.assertTrue(entry1.equals(entry1));
 	}
-	
+
 	public void equalsShouldBeTransitive() {
 		AbstractFilePathEntry entry1 = new JarPath("./dummy.jar");
 		AbstractFilePathEntry entry2 = new JarPath("./dummy.jar");
@@ -21,7 +21,7 @@ public class TestAbstractFilePathEntry {
 		Assert.assertTrue(entry2.equals(entry3));
 		Assert.assertTrue(entry1.equals(entry3));
 	}
-	
+
 	public void equalsShouldBeSymetric() {
 		AbstractFilePathEntry entry1 = new JarPath("./dummy.jar");
 		AbstractFilePathEntry entry2 = new JarPath("./dummy.jar");

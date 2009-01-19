@@ -3,7 +3,6 @@ package test.org.kalisen.common.adapter;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.hamcrest.core.IsNull;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.kalisen.common.adapter.AbstractAdapter;
@@ -19,7 +18,7 @@ public class TestAbstractAdapter {
 	public void setUpMockery() {
 		this.mockery = new Mockery();
 	}
-	
+
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void addListenerShouldThrowAnIllegalArgumentExceptionWhenPassedANullParameter() {
 		MyTestAdapter adapter = new MyTestAdapter();
@@ -31,7 +30,8 @@ public class TestAbstractAdapter {
 		final Observer listener = this.mockery.mock(Observer.class);
 		this.mockery.checking(new Expectations() {
 			{
-				oneOf(listener).update(with(any(Observable.class)), with(aNull(Object.class)));
+				oneOf(listener).update(with(any(Observable.class)),
+						with(aNull(Object.class)));
 			}
 		});
 		adapter.addListener(listener);

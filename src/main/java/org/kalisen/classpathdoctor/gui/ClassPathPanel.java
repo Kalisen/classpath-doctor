@@ -124,8 +124,8 @@ public class ClassPathPanel extends JPanel {
 		JButton addButton = new JButton(
 				new AddAnEntryAction(this, getAdapter()));
 		result.add(addButton);
-		JButton removeButton = new JButton(
-				new RemoveAnEntryAction(this.classpathList, getAdapter()));
+		JButton removeButton = new JButton(new RemoveAnEntryAction(
+				this.classpathList, getAdapter()));
 		result.add(removeButton);
 		result.add(Box.createVerticalGlue());
 		return result;
@@ -161,7 +161,7 @@ public class ClassPathPanel extends JPanel {
 		if (this.adapter == null) {
 			this.adapter = new DefaultClassPathAdapter();
 		}
-		return adapter;
+		return this.adapter;
 	}
 
 	public void setAdapter(ClassPathAdapter adapter) {

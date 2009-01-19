@@ -19,10 +19,11 @@ public class TestURLPath {
 
 	@BeforeMethod
 	protected void setUp() throws Exception {
-		this.url = this.getClass().getClassLoader().getResource("TestURLPath-resource.txt");
+		this.url = this.getClass().getClassLoader().getResource(
+				"TestURLPath-resource.txt");
 		this.testedURLPath = new URLPath(this.url);
 	}
-	
+
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void urlPathConstructorThrowsIllegalArgumentExceptionFornullParameter() {
 		new URLPath(null);
@@ -62,10 +63,12 @@ public class TestURLPath {
 
 	@Factory
 	public Object[] createEqualHashCodeTest() {
-		URL resourceUrl = this.getClass().getClassLoader().getResource("TestURLPath-resource.txt");
-		Object[] result = new Object[] { new TestEqualHelper(
-				new URLPath(resourceUrl), new URLPath(resourceUrl), new URLPath(resourceUrl))};
+		URL resourceUrl = this.getClass().getClassLoader().getResource(
+				"TestURLPath-resource.txt");
+		Object[] result = new Object[] { new TestEqualHelper(new URLPath(
+				resourceUrl), new URLPath(resourceUrl),
+				new URLPath(resourceUrl)) };
 		return result;
 	}
-	
+
 }

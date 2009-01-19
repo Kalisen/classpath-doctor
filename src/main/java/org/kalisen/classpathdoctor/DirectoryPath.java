@@ -26,8 +26,10 @@ public class DirectoryPath extends AbstractFilePathEntry {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((getPath() == null) ? 0 : removeTrailingPathSeparator(getPath()).hashCode());
+		result = prime
+				* result
+				+ ((getPath() == null) ? 0 : removeTrailingPathSeparator(
+						getPath()).hashCode());
 		result = prime * result
 				+ ((getVersion() == null) ? 0 : getVersion().hashCode());
 		return result;
@@ -35,20 +37,26 @@ public class DirectoryPath extends AbstractFilePathEntry {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		DirectoryPath other = (DirectoryPath) obj;
-		if (!equalsIgnoreTrailingPathSeparator(getPath(), other.getPath()))
+		if (!equalsIgnoreTrailingPathSeparator(getPath(), other.getPath())) {
 			return false;
+		}
 		if (getVersion() == null) {
-			if (other.getVersion() != null)
+			if (other.getVersion() != null) {
 				return false;
-		} else if (!getVersion().equals(other.getVersion()))
+			}
+		} else if (!getVersion().equals(other.getVersion())) {
 			return false;
+		}
 		return true;
 	}
 
@@ -56,16 +64,18 @@ public class DirectoryPath extends AbstractFilePathEntry {
 		path = removeTrailingPathSeparator(path);
 		other = removeTrailingPathSeparator(other);
 		if (path == null) {
-			if (other != null)
+			if (other != null) {
 				return false;
+			}
 		} else if (!path.equals(other)) {
 			return false;
 		}
 		return true;
 	}
-	
+
 	protected String removeTrailingPathSeparator(String dirPath) {
-		if (dirPath != null && dirPath.length() > 1 && dirPath.endsWith(getFileSeparator())) {
+		if (dirPath != null && dirPath.length() > 1
+				&& dirPath.endsWith(getFileSeparator())) {
 			dirPath = dirPath.substring(0, dirPath.length() - 1);
 		}
 		return dirPath;

@@ -24,7 +24,7 @@ public class DefaultClassPathAdapter extends AbstractAdapter implements
 		}
 		if (!this.currentClasspathAsText.equals(text)) {
 			this.currentClasspathAsText = text;
-			ClassPath newClasspath = parser.parse(text);
+			ClassPath newClasspath = this.parser.parse(text);
 			if (!this.currentClasspath.equalsIgnoreEmptyEntries(newClasspath)) {
 				this.currentClasspath = newClasspath;
 				getNotifier().setChanged();
@@ -48,17 +48,16 @@ public class DefaultClassPathAdapter extends AbstractAdapter implements
 			getNotifier().notifyObservers(this.currentClasspath);
 		}
 	}
-	
+
 	public ClassPath getClassPath() {
 		return this.currentClasspath;
 	}
-	
+
 	public void addEntry(String path) {
 		if (path == null) {
 			throw new IllegalArgumentException("null is not a valid argument");
 		}
-		PathEntry pathEntry = this.parser.getPathResolver().resolve(
-				path);
+		PathEntry pathEntry = this.parser.getPathResolver().resolve(path);
 		if (this.currentClasspathAsText.length() > 0) {
 			this.currentClasspathAsText += this.parser
 					.getPathSeparatorAsString();
@@ -74,11 +73,12 @@ public class DefaultClassPathAdapter extends AbstractAdapter implements
 			throw new IllegalArgumentException("null is not a valid argument");
 		}
 		if (this.currentClasspathAsText.length() < entryPath.length()) {
-			throw new IllegalArgumentException("Entry " + entryPath + " doesn't exist in current classpath");
+			throw new IllegalArgumentException("Entry " + entryPath
+					+ " doesn't exist in current classpath");
 		}
-		PathEntry pathEntry = this.parser.getPathResolver().resolve(
-				entryPath);
-		this.currentClasspathAsText = this.currentClasspathAsText.replace(entryPath, "");
+		PathEntry pathEntry = this.parser.getPathResolver().resolve(entryPath);
+		this.currentClasspathAsText = this.currentClasspathAsText.replace(
+				entryPath, "");
 		this.currentClasspath.removeEntry(pathEntry);
 		getNotifier().setChanged();
 		getNotifier().notifyObservers(this.currentClasspath);

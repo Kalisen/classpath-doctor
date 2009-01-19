@@ -10,14 +10,14 @@ public abstract class AbstractAdapter implements Adapter {
 	public AbstractAdapter() {
 		setNotifier(new MyObservable());
 	}
-	
+
 	public void addListener(Observer o) {
 		if (o == null) {
 			throw new IllegalArgumentException("null is not a valid argument");
 		}
 		this.notifier.addObserver(o);
 	}
-	
+
 	public void removeListener(Observer o) {
 		if (o == null) {
 			throw new IllegalArgumentException("null is not a valid argument");
@@ -35,7 +35,6 @@ public abstract class AbstractAdapter implements Adapter {
 		}
 		this.notifier = notifier;
 	}
-	
 
 	protected class MyObservable extends Observable {
 
@@ -43,6 +42,6 @@ public abstract class AbstractAdapter implements Adapter {
 		public synchronized void setChanged() {
 			super.setChanged();
 		}
-		
+
 	}
 }

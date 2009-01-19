@@ -13,8 +13,9 @@ import org.kalisen.classpathdoctor.adapter.ClassPathAdapter;
 @SuppressWarnings("serial")
 public class RemoveAnEntryAction extends AbstractAction {
 
-	private static final String REMOVE_AN_ENTRY_LABEL = ResourceBundle.getBundle(
-			"UsersMessages").getString("remove.an.entry.action.label");
+	private static final String REMOVE_AN_ENTRY_LABEL = ResourceBundle
+			.getBundle("UsersMessages").getString(
+					"remove.an.entry.action.label");
 
 	private ClassPathAdapter cpAdapter = null;
 	private JList parent = null;
@@ -41,7 +42,7 @@ public class RemoveAnEntryAction extends AbstractAction {
 	}
 
 	protected JList getParent() {
-		return parent;
+		return this.parent;
 	}
 
 	protected void setParent(JList parent) {
