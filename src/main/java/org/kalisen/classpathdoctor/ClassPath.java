@@ -78,33 +78,41 @@ public class ClassPath {
 			return false;
 		}
 		ClassPath other = (ClassPath) obj;
-		int entriesCount = this.entries.size();
-		if (entriesCount == 0) {
-			for (PathEntry otherEntry : other.entries) {
-				if (!otherEntry.equals(EmptyPathEntry.INSTANCE)) {
-					return false;
-				}
-			}
+		//identify smaller list
+		List<PathEntry> smallestList = null;
+		List<PathEntry> otherList = null;
+		if (this.entries.size() < other.entries.size()) {
+			smallestList = this.entries;
+			otherList = other.entries;
 		} else {
-			int i = 0;
-			int j = 0;
-			PathEntry thisEntry = null;
-			PathEntry otherEntry = null;
-			while (i < entriesCount) {
-				thisEntry = this.entries.get(i);
-				if (thisEntry.equals(EmptyPathEntry.INSTANCE)) {
-					i++;
-				} else {
-					otherEntry = other.entries.get(j);
-					if (!otherEntry.equals(EmptyPathEntry.INSTANCE)) {
-						if (!thisEntry.equals(otherEntry)) {
-							return false;
-						}
-						i++;
+			smallestList = other.entries;
+			otherList = this.entries;
+		}
+		//compare list elements ignoring EmptyPathEntry objects
+		int i = 0;
+		int j = 0;
+		PathEntry entry1 = null;
+		PathEntry entry2 = null;
+		while (i < smallestList.size()) {
+			entry1 = smallestList.get(i);
+			if (entry1.equals(EmptyPathEntry.INSTANCE)) {
+				i++;
+			} else {
+				entry2 = otherList.get(j);
+				if (!entry2.equals(EmptyPathEntry.INSTANCE)) {
+					if (!entry1.equals(entry2)) {
+						return false;
 					}
-					j++;
+					i++;
 				}
+				j++;
 			}
+		}
+		while (j < otherList.size()) {
+			if (!otherList.get(j).equals(EmptyPathEntry.INSTANCE)) {
+				return false;
+			}
+			j++;
 		}
 		return true;
 	}

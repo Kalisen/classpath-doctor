@@ -136,10 +136,24 @@ public class TestClassPath {
 	}
 
 	@Test
-	public void equalsShouldReturnFalseWhenComparingAnEmpyClassPathAndANonEmptyOne() {
+	public void equalsShouldReturnFalseWhenComparingAnEmptyClassPathAndANonEmptyOne() {
 		ClassPath cp1 = new ClassPath();
 		ClassPath cp2 = buildTestClassPathWithEmptyEntries();
 		Assert.assertFalse(cp1.equalsIgnoreEmptyEntries(cp2));
+	}
+
+	@Test
+	public void equalsShouldReturnFalseWhenComparingANonEmptyClassPathAndAnEmptyOne() {
+		ClassPath cp1 = buildTestClassPathWithEmptyEntries();
+		ClassPath cp2 = new ClassPath();
+		Assert.assertFalse(cp1.equalsIgnoreEmptyEntries(cp2));
+	}
+
+	@Test
+	public void equalsShouldReturnTrueWhenComparingANonEmptyClassPathAndAnEmptyOne() {
+		ClassPath cp1 = buildTestClassPathWithEmptyEntries();
+		ClassPath cp2 = buildTestClassPathWithEmptyEntries2();
+		Assert.assertTrue(cp2.equalsIgnoreEmptyEntries(cp1));
 	}
 
 	@Factory
