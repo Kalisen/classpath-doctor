@@ -25,7 +25,7 @@ public class AddAnEntryAction extends AbstractAction {
 	public AddAnEntryAction(JPanel parent, ClassPathAdapter cpAdapter) {
 		super(ADD_AN_ENTRY_LABEL);
 		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('a'));
-		putValue(MNEMONIC_KEY, KeyEvent.VK_A);
+		putValue(MNEMONIC_KEY, Integer.valueOf(KeyEvent.VK_A));
 		putValue(SHORT_DESCRIPTION, ResourceBundle.getBundle("UsersMessages")
 				.getString("add.an.entry.action.shortdesc"));
 		setParent(parent);

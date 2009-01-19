@@ -23,7 +23,7 @@ public class RemoveAnEntryAction extends AbstractAction {
 	public RemoveAnEntryAction(JList parent, ClassPathAdapter adapter) {
 		super(REMOVE_AN_ENTRY_LABEL);
 		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('r'));
-		putValue(MNEMONIC_KEY, KeyEvent.VK_R);
+		putValue(MNEMONIC_KEY, Integer.valueOf(KeyEvent.VK_R));
 		putValue(SHORT_DESCRIPTION, ResourceBundle.getBundle("UsersMessages")
 				.getString("remove.an.entry.action.shortdesc"));
 		setParent(parent);

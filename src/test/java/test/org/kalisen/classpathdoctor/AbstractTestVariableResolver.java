@@ -63,9 +63,8 @@ public abstract class AbstractTestVariableResolver {
 		public String getValue(String variable) {
 			if (VAR_NAME.equals(variable)) {
 				return AbstractTestVariableResolver.VAR_VALUE;
-			} else {
-				return null;
 			}
+			return null;
 		}
 	}
 
