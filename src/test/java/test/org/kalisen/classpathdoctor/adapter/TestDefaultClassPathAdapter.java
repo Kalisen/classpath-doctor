@@ -100,6 +100,32 @@ public class TestDefaultClassPathAdapter {
 		Assert.assertTrue(obs.hasBeenCalled,
 				"The Observer should have been called");
 	}
+	
+	public void removeTheFirstEntryShouldRemoveTheSeparatorAsWell() {
+		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
+		adapter.addEntry(CURRENT_DIR);
+		adapter.addEntry(CURRENT_DIR);
+		adapter.removeEntry(CURRENT_DIR);
+		Assert.assertEquals(adapter.getClassPathAsText(), CURRENT_DIR); 
+	}
+	
+	public void removeAnEntryInTheMiddleOfTheClassPathShouldRemoveUnnecessarySeparators() {
+		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
+		adapter.addEntry(CURRENT_DIR);
+		adapter.addEntry("..");
+		adapter.addEntry(CURRENT_DIR);
+		adapter.removeEntry("..");
+		Assert.assertEquals(adapter.getClassPathAsText(), CURRENT_DIR + PATH_SEPARATOR + CURRENT_DIR); 
+	}
+	
+	public void removeAnEntryShouldOnlyRemoveTheFirstOccurence() {
+		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
+		adapter.addEntry(CURRENT_DIR);
+		adapter.addEntry("..");
+		adapter.addEntry(CURRENT_DIR);
+		adapter.removeEntry(CURRENT_DIR);
+		Assert.assertEquals(adapter.getClassPathAsText(), ".." + PATH_SEPARATOR + CURRENT_DIR); 
+	}
 
 	public void testGetClassPathAsText() {
 		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();

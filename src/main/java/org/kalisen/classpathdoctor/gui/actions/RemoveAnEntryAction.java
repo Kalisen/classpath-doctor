@@ -56,7 +56,7 @@ public class RemoveAnEntryAction extends AbstractAction {
 		final ClassPathAdapter adapter = this.cpAdapter;
 		Object[] selectedEntries = getParent().getSelectedValues();
 		for (int i = 0; i < selectedEntries.length; i++) {
-			adapter.removeEntry(selectedEntries.toString());
+			adapter.removeEntry(selectedEntries[i].toString());
 		}
 	}
 }

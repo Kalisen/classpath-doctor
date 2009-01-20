@@ -11,11 +11,22 @@
 			<attribute name="javadoc_location" value="jar:file:/home/kalisen/workspace/3rdparty/swing-worker/swing-worker-doc-1.2.zip!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="jars/fest-swing-1.0.jar" sourcepath="jars/fest-swing-1.0-sources.jar"/>
+	<classpathentry kind="lib" path="jars/debug-1.0.jar"/>
+	<classpathentry kind="lib" path="jars/fest-assert-1.0.jar"/>
+	<classpathentry kind="lib" path="jars/fest-reflect-1.0.jar"/>
+	<classpathentry kind="lib" path="jars/fest-swing-testng-1.0.jar"/>
+	<classpathentry kind="lib" path="jars/fest-util-1.0.jar"/>
+	<classpathentry kind="lib" path="jars/jcip-annotations-1.0.jar"/>
+	<classpathentry kind="lib" path="jars/MRJToolkitStubs-1.0.jar"/>
 	<classpathentry kind="lib" path="jars/jmock2.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/classpath-doctor/jars/jmock2-javadoc.zip!/jmock-2.5.1/doc"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="jars/hamcrest-core.jar"/>
+	<classpathentry kind="lib" path="jars/hamcrest-library.jar"/>
+	<classpathentry kind="lib" path="jars/objenesis.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
