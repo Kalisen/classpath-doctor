@@ -97,7 +97,7 @@ public class ClassPath {
 			entry1 = smallestList.get(i);
 			if (entry1.equals(EmptyPathEntry.INSTANCE)) {
 				i++;
-			} else {
+			} else if (j < otherList.size()) {
 				entry2 = otherList.get(j);
 				if (!entry2.equals(EmptyPathEntry.INSTANCE)) {
 					if (!entry1.equals(entry2)) {
@@ -106,6 +106,8 @@ public class ClassPath {
 					i++;
 				}
 				j++;
+			} else {
+				return false;
 			}
 		}
 		while (j < otherList.size()) {

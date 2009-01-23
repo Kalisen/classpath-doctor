@@ -136,24 +136,31 @@ public class TestClassPath {
 	}
 
 	@Test
-	public void equalsShouldReturnFalseWhenComparingAnEmptyClassPathAndANonEmptyOne() {
+	public void equalsIgnoreEmptyEntriesShouldReturnFalseWhenComparingAnEmptyClassPathAndANonEmptyOne() {
 		ClassPath cp1 = new ClassPath();
 		ClassPath cp2 = buildTestClassPathWithEmptyEntries();
 		Assert.assertFalse(cp1.equalsIgnoreEmptyEntries(cp2));
 	}
 
 	@Test
-	public void equalsShouldReturnFalseWhenComparingANonEmptyClassPathAndAnEmptyOne() {
+	public void equalsIgnoreEmptyEntriesShouldReturnFalseWhenComparingANonEmptyClassPathAndAnEmptyOne() {
 		ClassPath cp1 = buildTestClassPathWithEmptyEntries();
 		ClassPath cp2 = new ClassPath();
 		Assert.assertFalse(cp1.equalsIgnoreEmptyEntries(cp2));
 	}
 
 	@Test
-	public void equalsShouldReturnTrueWhenComparingANonEmptyClassPathAndAnEmptyOne() {
+	public void equalsIgnoreEmptyEntriesShouldReturnTrueIfDifferenceIsOnlyEmptyEntries() {
 		ClassPath cp1 = buildTestClassPathWithEmptyEntries();
 		ClassPath cp2 = buildTestClassPathWithEmptyEntries2();
 		Assert.assertTrue(cp2.equalsIgnoreEmptyEntries(cp1));
+	}
+
+	@Test
+	public void equalsIgnoreEmptyEntriesShouldReturnFalse() {
+		ClassPath cp1 = buildDifferentClassPathWithEmptyEntries2();
+		ClassPath cp2 = buildDifferentClassPathWithEmptyEntries();
+		Assert.assertFalse(cp2.equalsIgnoreEmptyEntries(cp1));
 	}
 
 	@Factory
@@ -183,6 +190,22 @@ public class TestClassPath {
 		result.addEntry(new DirectoryPath("./"));
 		result.addEntry(EmptyPathEntry.INSTANCE);
 		result.addEntry(new DirectoryPath("../"));
+		return result;
+	}
+
+	public ClassPath buildDifferentClassPathWithEmptyEntries2() {
+		ClassPath result = new ClassPath();
+		result.addEntry(EmptyPathEntry.INSTANCE);
+		result.addEntry(EmptyPathEntry.INSTANCE);
+		result.addEntry(EmptyPathEntry.INSTANCE);
+		result.addEntry(EmptyPathEntry.INSTANCE);
+		return result;
+	}
+
+	public ClassPath buildDifferentClassPathWithEmptyEntries() {
+		ClassPath result = new ClassPath();
+		result.addEntry(new DirectoryPath("dummy"));
+		result.addEntry(EmptyPathEntry.INSTANCE);
 		return result;
 	}
 }
