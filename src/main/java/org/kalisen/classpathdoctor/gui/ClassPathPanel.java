@@ -1,9 +1,11 @@
 package org.kalisen.classpathdoctor.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -25,6 +27,8 @@ import org.kalisen.classpathdoctor.PathEntry;
 import org.kalisen.classpathdoctor.adapter.ClassPathAdapter;
 import org.kalisen.classpathdoctor.adapter.DefaultClassPathAdapter;
 import org.kalisen.classpathdoctor.gui.actions.AddAnEntryAction;
+import org.kalisen.classpathdoctor.gui.actions.MoveDownAction;
+import org.kalisen.classpathdoctor.gui.actions.MoveUpAction;
 import org.kalisen.classpathdoctor.gui.actions.RemoveAnEntryAction;
 import org.kalisen.common.DefaultErrorHandler;
 import org.kalisen.common.ErrorHandler;
@@ -36,7 +40,10 @@ public class ClassPathPanel extends JPanel {
 
 	private JList classpathList = null;
 	private JTextArea classpathTextArea = null;
-	private JPanel buttonPanel = null;
+	private JButton addButton = null;
+	private JButton removeButton = null;
+	private JButton moveUpButton = null;
+	private JButton moveDownButton = null;
 
 	private DefaultListModel classpathListModel = null;
 	private ClassPathAdapter adapter = null;
@@ -96,17 +103,19 @@ public class ClassPathPanel extends JPanel {
 
 	private void init() {
 		setLayout(new BorderLayout());
+		setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		this.classpathList = buildListComponent();
 		this.classpathTextArea = buildTextComponent();
-		this.buttonPanel = buildButtonPanel();
+		JPanel buttonPanel = buildButtonPanel();
 		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		splitPane.setDividerLocation(.8);
 		splitPane.setResizeWeight(.8);
 		JScrollPane listScrollPane = new JScrollPane(this.classpathList);
 		splitPane.add(listScrollPane, JSplitPane.TOP);
-		splitPane.add(this.classpathTextArea, JSplitPane.BOTTOM);
+		JScrollPane textScrollPane = new JScrollPane(this.classpathTextArea);
+		splitPane.add(textScrollPane, JSplitPane.BOTTOM);
 		add(splitPane, BorderLayout.CENTER);
-		add(this.buttonPanel, BorderLayout.EAST);
+		add(buttonPanel, BorderLayout.EAST);
 		initListeners();
 	}
 
@@ -120,13 +129,26 @@ public class ClassPathPanel extends JPanel {
 	private JPanel buildButtonPanel() {
 		JPanel result = new JPanel();
 		result.setLayout(new BoxLayout(result, BoxLayout.Y_AXIS));
+		result.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		result.add(Box.createVerticalGlue());
-		JButton addButton = new JButton(
-				new AddAnEntryAction(this, getAdapter()));
-		result.add(addButton);
-		JButton removeButton = new JButton(new RemoveAnEntryAction(
+		this.moveUpButton = new JButton(new MoveUpAction(this.classpathList, getAdapter()));
+		this.moveUpButton.setMaximumSize(new Dimension(Integer.MAX_VALUE,
+				this.moveUpButton.getSize().height));
+		result.add(this.moveUpButton);
+		this.moveDownButton = new JButton(new MoveDownAction(this.classpathList, getAdapter()));
+		this.moveDownButton.setMaximumSize(new Dimension(Integer.MAX_VALUE,
+				this.moveDownButton.getSize().height));
+		result.add(this.moveDownButton);
+		result.add(Box.createVerticalStrut(5));
+		this.addButton = new JButton(new AddAnEntryAction(this, getAdapter()));
+		this.addButton.setMaximumSize(new Dimension(Integer.MAX_VALUE,
+				this.addButton.getSize().height));
+		result.add(this.addButton);
+		this.removeButton = new JButton(new RemoveAnEntryAction(
 				this.classpathList, getAdapter()));
-		result.add(removeButton);
+		this.removeButton.setMaximumSize(new Dimension(Integer.MAX_VALUE,
+				this.removeButton.getSize().height));
+		result.add(this.removeButton);
 		result.add(Box.createVerticalGlue());
 		return result;
 	}
@@ -135,6 +157,17 @@ public class ClassPathPanel extends JPanel {
 		JTextArea result = new JTextArea();
 		PlainDocument doc = new PlainDocument();
 		doc.setDocumentFilter(new DocumentFilter() {
+
+			@Override
+			public void insertString(FilterBypass fb, int offset,
+					String string, AttributeSet attr)
+					throws BadLocationException {
+				if ("\n".equals(string)) {
+					return; // don't insert any new lines
+				}
+				super.insertString(fb, offset, string, attr);
+			}
+
 			@Override
 			public void replace(FilterBypass fb, int offset, int length,
 					String text, AttributeSet attrs)
