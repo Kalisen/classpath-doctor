@@ -89,15 +89,13 @@ public class DefaultClassPathAdapter extends AbstractAdapter implements
 		temp.delete(entryIndex, entryIndex + entryPath.length());
 		final String SEPARATOR = this.parser.getPathSeparatorAsString();
 		if (temp.indexOf(SEPARATOR) > -1) {
-			if (temp.substring(entryIndex, entryIndex + SEPARATOR.length()).equals(SEPARATOR)) {
+			int lastSeparatorIndex = temp.lastIndexOf(SEPARATOR);
+			if (lastSeparatorIndex == temp.length() - SEPARATOR.length()) {
+				// if there's a leftover separator at the end
+				temp.delete(lastSeparatorIndex, temp.length());
+			} else if (temp.substring(entryIndex, entryIndex + SEPARATOR.length()).equals(SEPARATOR)) {
 				// if there's a leftover separator at the beginning or in the middle
 				temp.delete(entryIndex, entryIndex + SEPARATOR.length());
-			} else {
-				int lastSeparatorIndex = temp.lastIndexOf(SEPARATOR);
-				if (lastSeparatorIndex == temp.length() - SEPARATOR.length()) {
-					// if there's a leftover separator at the end
-					temp.delete(lastSeparatorIndex, temp.length() - 1);
-				}
 			}
 		}
 		this.currentClasspathAsText = temp.toString();

@@ -51,17 +51,20 @@ public class TestClassPathPanel {
 						+ CURRENT_DIR.getFile().getAbsolutePath());
 		assertListEntryEquals(this.frame.list().item(0), "..");
 		assertListEntryEquals(this.frame.list().item(1), ".");
+		this.frame.list().requireNoSelection();
 
 		this.frame.list().selectItem(0);
 		removeButton.click();
 		this.frame.textBox().requireText(
 				CURRENT_DIR.getFile().getAbsolutePath());
 		assertListEntryEquals(this.frame.list().item(0), ".");
+		this.frame.list().requireNoSelection();
 
 		this.frame.list().selectItem(0);
 		removeButton.click();
 		this.frame.textBox().requireEmpty();
 		Assert.assertTrue(this.frame.list().contents().length == 0);
+		this.frame.list().requireNoSelection();
 	}
 
 	public void testRemoveAnEntryWithCurrentAndParentDirectories() {
@@ -221,6 +224,19 @@ public class TestClassPathPanel {
 				getAbsolutePath(ENTRY2) + SEPARATOR + getAbsolutePath(ENTRY3)
 						+ SEPARATOR + getAbsolutePath(ENTRY1));
 		moveUpButton.requireDisabled();
+	}
+
+	public void testRemoveTheLastElementInTheList() {
+		final String ENTRY1 = "entry1";
+		final String ENTRY2 = "entry2";
+		addEntry(ENTRY1);
+		addEntry(ENTRY2);
+		this.frame.list().selectItem(1);
+		JButtonFixture removeButton = this.frame.button("REMOVE_ENTRY");
+		removeButton.click();
+		this.frame.textBox().requireText(getAbsolutePath(ENTRY1));
+		assertListEntryEquals(this.frame.list().item(0), ENTRY1);
+		this.frame.list().requireNoSelection();
 	}
 
 	protected void addEntry(String path) {

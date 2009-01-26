@@ -58,5 +58,7 @@ public class RemoveAnEntryAction extends AbstractAction {
 		for (int i = 0; i < selectedEntries.length; i++) {
 			adapter.removeEntry(selectedEntries[i].toString());
 		}
+		//clear selection after element has been removed
+		getParent().getSelectionModel().clearSelection();
 	}
 }
