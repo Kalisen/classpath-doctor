@@ -79,6 +79,7 @@ public class ClassPathPanel extends JPanel {
 		public void update(Observable o, final Object arg) {
 			if (arg instanceof ClassPath) {
 				ClassPathPanel.this.classpathListModel.setClassPath(getAdapter().getClassPath());
+				ClassPathPanel.this.classpathList.repaint();
 			}
 		}
 	};
