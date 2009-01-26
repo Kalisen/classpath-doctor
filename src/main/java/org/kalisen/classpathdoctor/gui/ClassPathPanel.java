@@ -1,6 +1,8 @@
 package org.kalisen.classpathdoctor.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.util.Observable;
 import java.util.Observer;
@@ -8,6 +10,7 @@ import java.util.Observer;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -78,7 +81,8 @@ public class ClassPathPanel extends JPanel {
 	private final Observer adapterListenerForList = new Observer() {
 		public void update(Observable o, final Object arg) {
 			if (arg instanceof ClassPath) {
-				ClassPathPanel.this.classpathListModel.setClassPath(getAdapter().getClassPath());
+				ClassPathPanel.this.classpathListModel
+						.setClassPath(getAdapter().getClassPath());
 				ClassPathPanel.this.classpathList.repaint();
 			}
 		}
@@ -153,7 +157,8 @@ public class ClassPathPanel extends JPanel {
 		}
 
 		public void contentsChanged(ListDataEvent e) {
-			getAdapter().setClassPath(ClassPathPanel.this.classpathListModel.getClassPath());
+			getAdapter().setClassPath(
+					ClassPathPanel.this.classpathListModel.getClassPath());
 		}
 	};
 
@@ -187,7 +192,8 @@ public class ClassPathPanel extends JPanel {
 		getAdapter().addListener(this.adapterListenerForButtons);
 		this.classpathList
 				.addListSelectionListener(this.listListenerForButtons);
-		this.classpathListModel.addListDataListener(this.listDataListenerForAdapter);
+		this.classpathListModel
+				.addListDataListener(this.listDataListenerForAdapter);
 	}
 
 	private JPanel buildButtonPanel() {
@@ -197,15 +203,16 @@ public class ClassPathPanel extends JPanel {
 
 		result.add(Box.createVerticalGlue());
 
-		this.moveUpButton = new JButton(new MoveUpAction(this.classpathList, this.classpathListModel));
+		this.moveUpButton = new JButton(new MoveUpAction(this.classpathList,
+				this.classpathListModel));
 		this.moveUpButton.setName("MOVE_UP");
 		this.moveUpButton.setMaximumSize(new Dimension(Integer.MAX_VALUE,
 				this.moveUpButton.getSize().height));
 		this.moveUpButton.setEnabled(false);
 		result.add(this.moveUpButton);
 
-		this.moveDownButton = new JButton(
-				new MoveDownAction(this.classpathList, this.classpathListModel));
+		this.moveDownButton = new JButton(new MoveDownAction(
+				this.classpathList, this.classpathListModel));
 		this.moveDownButton.setName("MOVE_DOWN");
 		this.moveDownButton.setMaximumSize(new Dimension(Integer.MAX_VALUE,
 				this.moveDownButton.getSize().height));
@@ -267,6 +274,21 @@ public class ClassPathPanel extends JPanel {
 	private JList buildListComponent() {
 		this.classpathListModel = new ClassPathListModel();
 		JList result = new JList(this.classpathListModel);
+		result.setCellRenderer(new DefaultListCellRenderer() {
+
+			private final Color ODD_COLOR = new Color(0xEEEEFF);
+
+			public Component getListCellRendererComponent(JList list,
+					Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
+				Component result = super.getListCellRendererComponent(list,
+						value, index, isSelected, cellHasFocus);
+				if (!isSelected && index % 2 == 1) {
+					result.setBackground(this.ODD_COLOR);
+				}
+				return result;
+			}
+		});
 		return result;
 	}
 
