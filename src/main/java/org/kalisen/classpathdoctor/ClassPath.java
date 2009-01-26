@@ -12,7 +12,7 @@ public class ClassPath {
 		setEntries(new ArrayList<PathEntry>());
 	}
 
-	public ClassPath(ArrayList<PathEntry> entries) {
+	public ClassPath(List<PathEntry> entries) {
 		setEntries(entries);
 	}
 
