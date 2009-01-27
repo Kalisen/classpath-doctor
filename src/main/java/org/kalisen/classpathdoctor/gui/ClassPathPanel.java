@@ -4,6 +4,22 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragSourceAdapter;
+import java.awt.dnd.DragSourceDropEvent;
+import java.awt.dnd.DragSourceListener;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetAdapter;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetListener;
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -28,7 +44,9 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 
+import org.fest.swing.util.Arrays;
 import org.kalisen.classpathdoctor.ClassPath;
+import org.kalisen.classpathdoctor.PathEntry;
 import org.kalisen.classpathdoctor.adapter.ClassPathAdapter;
 import org.kalisen.classpathdoctor.adapter.DefaultClassPathAdapter;
 import org.kalisen.classpathdoctor.gui.actions.AddAnEntryAction;
@@ -162,6 +180,54 @@ public class ClassPathPanel extends JPanel {
 		}
 	};
 
+	private final DragGestureListener listDragGestureListener = new DragGestureListener() {
+
+		public void dragGestureRecognized(DragGestureEvent dge) {
+			JList list = (JList) dge.getComponent();
+			Object[] selection = list.getSelectedValues();
+			PathEntry[] selectedEntries = new PathEntry[selection.length];
+			System
+					.arraycopy(selection, 0, selectedEntries, 0,
+							selection.length);
+			PathEntriesTransferable transferable = new PathEntriesTransferable(
+					selectedEntries);
+			dge.startDrag(DragSource.DefaultMoveDrop, transferable);
+		}
+	};
+
+	private final DragSourceListener listDragSourceListener = new DragSourceAdapter() {
+
+		public void dragDropEnd(DragSourceDropEvent dsde) {
+			System.out.println("Source - dragDropEnd: " + dsde.getX() + "."
+					+ dsde.getY());
+		}
+	};
+
+	private final DropTargetListener listDropTargetListener = new DropTargetAdapter() {
+
+		public void drop(DropTargetDropEvent dtde) {
+			boolean acceptDrop = dtde.isLocalTransfer()
+					&& dtde
+							.isDataFlavorSupported(PathEntriesTransferable.PATHENTRIES_DATAFLAVOR)
+					&& dtde.getDropAction() == DnDConstants.ACTION_MOVE;
+			if (acceptDrop) {
+				dtde.acceptDrop(DnDConstants.ACTION_MOVE);
+				doDrop(dtde);
+				dtde.dropComplete(true);
+			} else {
+				dtde.rejectDrop();
+			}
+		}
+		
+		private void doDrop(DropTargetDropEvent dtde) {
+			Transferable transferable = dtde.getTransferable();
+			Point dropLocation = dtde.getLocation();
+			JList list = ClassPathPanel.this.classpathList;
+			int dropIndex = list.locationToIndex(dropLocation);
+			//TODO continue
+		}
+	};
+
 	public ClassPathPanel() {
 		init();
 	}
@@ -289,6 +355,13 @@ public class ClassPathPanel extends JPanel {
 				return result;
 			}
 		});
+		result.setDragEnabled(true);
+		DragSource dSource = new DragSource();
+		dSource.addDragSourceListener(this.listDragSourceListener);
+		dSource.createDefaultDragGestureRecognizer(result,
+				DnDConstants.ACTION_MOVE, this.listDragGestureListener);
+		DropTarget dt = new DropTarget(result, this.listDropTargetListener);
+		result.setDropTarget(dt);
 		return result;
 	}
 
@@ -323,4 +396,39 @@ public class ClassPathPanel extends JPanel {
 		}
 		this.errorHandler = handler;
 	}
+
+	public static class PathEntriesTransferable implements Transferable {
+		public static final DataFlavor PATHENTRIES_DATAFLAVOR = new DataFlavor(
+				PathEntry[].class, "Path Entries");
+		private static final DataFlavor[] FLAVORS = { PATHENTRIES_DATAFLAVOR };
+
+		private PathEntry[] entries = null;
+
+		public PathEntriesTransferable(PathEntry[] entries) {
+			if (entries == null) {
+				throw new IllegalArgumentException(
+						"null is not a valid argument");
+			}
+			this.entries = Arrays.copyOf(entries);
+		}
+
+		public Object getTransferData(DataFlavor flavor)
+				throws UnsupportedFlavorException, IOException {
+			if (!isDataFlavorSupported(flavor)) {
+				throw new UnsupportedFlavorException(flavor);
+			}
+			return this.entries;
+
+		}
+
+		public DataFlavor[] getTransferDataFlavors() {
+			return FLAVORS;
+		}
+
+		public boolean isDataFlavorSupported(DataFlavor flavor) {
+			return FLAVORS[0].equals(flavor);
+		}
+
+	}
+
 }
