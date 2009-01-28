@@ -1,6 +1,8 @@
 package org.kalisen.classpathdoctor;
 
-public class DefaultVersion implements Version {
+import java.io.Serializable;
+
+public class DefaultVersion implements Version, Serializable {
 
 	private int major = 0;
 	private int minor = 0;

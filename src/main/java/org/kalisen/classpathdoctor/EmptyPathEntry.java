@@ -1,6 +1,8 @@
 package org.kalisen.classpathdoctor;
 
-public class EmptyPathEntry implements PathEntry {
+import java.io.Serializable;
+
+public class EmptyPathEntry implements PathEntry, Serializable {
 
 	public static final EmptyPathEntry INSTANCE = new EmptyPathEntry();
 

@@ -1,10 +1,11 @@
 package org.kalisen.classpathdoctor;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class URLPath implements PathEntry {
+public class URLPath implements PathEntry, Serializable {
 
 	private URL url = null;
 	private Version version = new DefaultVersion();

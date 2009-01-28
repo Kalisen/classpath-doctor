@@ -50,7 +50,7 @@ public class DefaultClassPathAdapter extends AbstractAdapter implements
 	}
 
 	public ClassPath getClassPath() {
-		return this.currentClasspath;
+		return new ClassPath(this.currentClasspath);
 	}
 
 	public void addEntry(String path) {

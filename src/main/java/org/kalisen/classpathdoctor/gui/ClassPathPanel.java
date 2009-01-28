@@ -186,9 +186,7 @@ public class ClassPathPanel extends JPanel {
 			JList list = (JList) dge.getComponent();
 			Object[] selection = list.getSelectedValues();
 			PathEntry[] selectedEntries = new PathEntry[selection.length];
-			System
-					.arraycopy(selection, 0, selectedEntries, 0,
-							selection.length);
+			System.arraycopy(selection, 0, selectedEntries, 0, selection.length);
 			PathEntriesTransferable transferable = new PathEntriesTransferable(
 					selectedEntries);
 			dge.startDrag(DragSource.DefaultMoveDrop, transferable);
@@ -198,8 +196,11 @@ public class ClassPathPanel extends JPanel {
 	private final DragSourceListener listDragSourceListener = new DragSourceAdapter() {
 
 		public void dragDropEnd(DragSourceDropEvent dsde) {
-			System.out.println("Source - dragDropEnd: " + dsde.getX() + "."
-					+ dsde.getY());
+			if (dsde.getDropSuccess()) {
+				JList list = (JList)dsde.getDragSourceContext().getComponent();
+				int[] selectedIndices = list.getSelectedIndices();
+				((ClassPathListModel)list.getModel()).removeElementAt(selectedIndices[0]);
+			}
 		}
 	};
 
@@ -207,24 +208,34 @@ public class ClassPathPanel extends JPanel {
 
 		public void drop(DropTargetDropEvent dtde) {
 			boolean acceptDrop = dtde.isLocalTransfer()
-					&& dtde
-							.isDataFlavorSupported(PathEntriesTransferable.PATHENTRIES_DATAFLAVOR)
+					&& dtde.isDataFlavorSupported(PathEntriesTransferable.PATHENTRIES_DATAFLAVOR)
 					&& dtde.getDropAction() == DnDConstants.ACTION_MOVE;
 			if (acceptDrop) {
 				dtde.acceptDrop(DnDConstants.ACTION_MOVE);
-				doDrop(dtde);
-				dtde.dropComplete(true);
+				dtde.dropComplete(doDrop(dtde));
 			} else {
 				dtde.rejectDrop();
 			}
-		}
+		}		
 		
-		private void doDrop(DropTargetDropEvent dtde) {
+		public boolean doDrop(DropTargetDropEvent dtde) {
+			boolean dropSucceeded = true;
 			Transferable transferable = dtde.getTransferable();
-			Point dropLocation = dtde.getLocation();
-			JList list = ClassPathPanel.this.classpathList;
-			int dropIndex = list.locationToIndex(dropLocation);
-			//TODO continue
+			PathEntry[] droppedEntries;
+			try {
+				droppedEntries = (PathEntry[])transferable.getTransferData(PathEntriesTransferable.PATHENTRIES_DATAFLAVOR);
+				Point dropLocation = dtde.getLocation();
+				JList list = (JList)dtde.getDropTargetContext().getComponent();
+				int dropIndex = list.locationToIndex(dropLocation);
+				if (list.getSelectedIndex() < dropIndex) {
+					((ClassPathListModel)list.getModel()).insertElementAt(dropIndex + 1, droppedEntries[0]);
+				} else {
+					((ClassPathListModel)list.getModel()).insertElementAt(dropIndex, droppedEntries[0]);
+				}
+			} catch (Exception e) {
+				dropSucceeded = false;
+			}
+			return dropSucceeded;
 		}
 	};
 

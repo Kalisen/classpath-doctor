@@ -1,6 +1,9 @@
 package org.kalisen.classpathdoctor;
 
-public class PathSeparator implements PathElement {
+import java.io.Serializable;
+
+
+public class PathSeparator implements PathElement, Serializable {
 
 	private String pathSeparator = null;
 

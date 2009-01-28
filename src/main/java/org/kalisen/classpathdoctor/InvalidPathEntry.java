@@ -1,6 +1,8 @@
 package org.kalisen.classpathdoctor;
 
-public class InvalidPathEntry implements PathEntry {
+import java.io.Serializable;
+
+public class InvalidPathEntry implements PathEntry, Serializable {
 
 	private Version version = new DefaultVersion();
 	private String path = null;

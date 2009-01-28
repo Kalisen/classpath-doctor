@@ -1,9 +1,10 @@
 package org.kalisen.classpathdoctor;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ResourceBundle;
 
-public abstract class AbstractFilePathEntry implements PathEntry {
+public abstract class AbstractFilePathEntry implements PathEntry, Serializable {
 
 	private Version version = new DefaultVersion();
 	private String fileSeparator = null;

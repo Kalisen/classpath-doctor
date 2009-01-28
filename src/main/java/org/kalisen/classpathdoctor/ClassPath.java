@@ -16,6 +16,11 @@ public class ClassPath {
 		setEntries(entries);
 	}
 
+	public ClassPath(ClassPath classPath) {
+		setEntries(classPath.getEntries());
+		setFormatter(classPath.getFormatter());
+	}
+
 	public List<PathEntry> getEntries() {
 		return new ArrayList<PathEntry>(this.entries);
 	}

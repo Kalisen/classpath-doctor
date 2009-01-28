@@ -6,4 +6,7 @@ public class DefaultErrorHandler implements ErrorHandler {
 		t.printStackTrace();
 	}
 
+	public void handleError(String errorMessage) {
+		System.err.println("Error" + errorMessage);
+	}
 }
