@@ -30,7 +30,57 @@ public class TestClassPathPanel {
 		this.frame = new FrameFixture(new ClassPathDoctorGUI());
 		this.frame.show();
 	}
+	
+	@Test(groups="DnD")
+	public void testDroppingOnStartingPointShouldHaveNoEffect() {
+		final String ENTRY1 = "entry1";
+		final String ENTRY2 = "entry2";
+		final String ENTRY3 = "entry3";
+		addEntry(ENTRY1);
+		addEntry(ENTRY2);
+		addEntry(ENTRY3);
+		this.frame.list().drag(2);
+		this.frame.list().drop(2);
+		assertListEntryEquals(this.frame.list().item(0), ENTRY1);
+		assertListEntryEquals(this.frame.list().item(1), ENTRY2);
+		assertListEntryEquals(this.frame.list().item(2), ENTRY3);
+		this.frame.list().drag(2);
+		this.frame.list().drop(0);
+		assertListEntryEquals(this.frame.list().item(0), ENTRY3);
+		assertListEntryEquals(this.frame.list().item(1), ENTRY1);
+		assertListEntryEquals(this.frame.list().item(2), ENTRY2);
+	}
 
+	@Test(groups="DnD")
+	public void testDraggingObjectToTheTop() {
+		final String ENTRY1 = "entry1";
+		final String ENTRY2 = "entry2";
+		final String ENTRY3 = "entry3";
+		addEntry(ENTRY1);
+		addEntry(ENTRY2);
+		addEntry(ENTRY3);
+		this.frame.list().drag(2);
+		this.frame.list().drop(0);
+		assertListEntryEquals(this.frame.list().item(0), ENTRY3);
+		assertListEntryEquals(this.frame.list().item(1), ENTRY1);
+		assertListEntryEquals(this.frame.list().item(2), ENTRY2);
+	}
+
+	@Test(groups="DnD")
+	public void testDraggingObjectToTheBottom() {
+		final String ENTRY1 = "entry1";
+		final String ENTRY2 = "entry2";
+		final String ENTRY3 = "entry3";
+		addEntry(ENTRY1);
+		addEntry(ENTRY2);
+		addEntry(ENTRY3);
+		this.frame.list().drag(0);
+		this.frame.list().drop(2);
+		assertListEntryEquals(this.frame.list().item(0), ENTRY2);
+		assertListEntryEquals(this.frame.list().item(1), ENTRY3);
+		assertListEntryEquals(this.frame.list().item(2), ENTRY1);
+	}
+	
 	public void testAddAnEntryButton() {
 		String path = ".";
 		addEntry(path);

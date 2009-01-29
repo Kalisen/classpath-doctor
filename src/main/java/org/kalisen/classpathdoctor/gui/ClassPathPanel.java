@@ -366,7 +366,8 @@ public class ClassPathPanel extends JPanel {
 				return result;
 			}
 		});
-		result.setDragEnabled(true);
+		// set Drag enable to false as it is related to swing DnD support
+		result.setDragEnabled(false);
 		DragSource dSource = new DragSource();
 		dSource.addDragSourceListener(this.listDragSourceListener);
 		dSource.createDefaultDragGestureRecognizer(result,
