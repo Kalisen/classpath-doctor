@@ -1,24 +1,10 @@
 package org.kalisen.classpathdoctor.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DragGestureEvent;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragSource;
-import java.awt.dnd.DragSourceAdapter;
-import java.awt.dnd.DragSourceDropEvent;
-import java.awt.dnd.DragSourceListener;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetAdapter;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetListener;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
@@ -26,9 +12,7 @@ import java.util.Observer;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -61,7 +45,7 @@ public class ClassPathPanel extends JPanel {
 
 	private ErrorHandler errorHandler = null;
 
-	private JList classpathList = null;
+	private ClassPathList pathsList = null;
 	private JTextArea classpathTextArea = null;
 	private JButton addButton = null;
 	private JButton removeButton = null;
@@ -101,7 +85,7 @@ public class ClassPathPanel extends JPanel {
 			if (arg instanceof ClassPath) {
 				ClassPathPanel.this.classpathListModel
 						.setClassPath(getAdapter().getClassPath());
-				ClassPathPanel.this.classpathList.repaint();
+				ClassPathPanel.this.pathsList.repaint();
 			}
 		}
 	};
@@ -111,7 +95,7 @@ public class ClassPathPanel extends JPanel {
 			if (arg instanceof ClassPath) {
 				ClassPath cp = getAdapter().getClassPath();
 				boolean shouldBeEnabled = cp.getEntries().size() > 0
-						&& ClassPathPanel.this.classpathList
+						&& ClassPathPanel.this.pathsList
 								.getSelectedIndices().length > 0;
 				if (ClassPathPanel.this.removeButton.isEnabled() != shouldBeEnabled) {
 					ClassPathPanel.this.removeButton
@@ -154,7 +138,7 @@ public class ClassPathPanel extends JPanel {
 					ClassPathPanel.this.moveDownButton
 							.setEnabled(moveDownShouldBeEnabled);
 				}
-				boolean removeShouldBeEnabled = ClassPathPanel.this.classpathList
+				boolean removeShouldBeEnabled = ClassPathPanel.this.pathsList
 						.getSelectedIndices().length > 0;
 				if (ClassPathPanel.this.removeButton.isEnabled() != removeShouldBeEnabled) {
 					ClassPathPanel.this.removeButton
@@ -180,65 +164,6 @@ public class ClassPathPanel extends JPanel {
 		}
 	};
 
-	private final DragGestureListener listDragGestureListener = new DragGestureListener() {
-
-		public void dragGestureRecognized(DragGestureEvent dge) {
-			JList list = (JList) dge.getComponent();
-			Object[] selection = list.getSelectedValues();
-			PathEntry[] selectedEntries = new PathEntry[selection.length];
-			System.arraycopy(selection, 0, selectedEntries, 0, selection.length);
-			PathEntriesTransferable transferable = new PathEntriesTransferable(
-					selectedEntries);
-			dge.startDrag(DragSource.DefaultMoveDrop, transferable);
-		}
-	};
-
-	private final DragSourceListener listDragSourceListener = new DragSourceAdapter() {
-
-		public void dragDropEnd(DragSourceDropEvent dsde) {
-			if (dsde.getDropSuccess()) {
-				JList list = (JList)dsde.getDragSourceContext().getComponent();
-				int[] selectedIndices = list.getSelectedIndices();
-				((ClassPathListModel)list.getModel()).removeElementAt(selectedIndices[0]);
-			}
-		}
-	};
-
-	private final DropTargetListener listDropTargetListener = new DropTargetAdapter() {
-
-		public void drop(DropTargetDropEvent dtde) {
-			boolean acceptDrop = dtde.isLocalTransfer()
-					&& dtde.isDataFlavorSupported(PathEntriesTransferable.PATHENTRIES_DATAFLAVOR)
-					&& dtde.getDropAction() == DnDConstants.ACTION_MOVE;
-			if (acceptDrop) {
-				dtde.acceptDrop(DnDConstants.ACTION_MOVE);
-				dtde.dropComplete(doDrop(dtde));
-			} else {
-				dtde.rejectDrop();
-			}
-		}		
-		
-		public boolean doDrop(DropTargetDropEvent dtde) {
-			boolean dropSucceeded = true;
-			Transferable transferable = dtde.getTransferable();
-			PathEntry[] droppedEntries;
-			try {
-				droppedEntries = (PathEntry[])transferable.getTransferData(PathEntriesTransferable.PATHENTRIES_DATAFLAVOR);
-				Point dropLocation = dtde.getLocation();
-				JList list = (JList)dtde.getDropTargetContext().getComponent();
-				int dropIndex = list.locationToIndex(dropLocation);
-				if (list.getSelectedIndex() < dropIndex) {
-					((ClassPathListModel)list.getModel()).insertElementAt(dropIndex + 1, droppedEntries[0]);
-				} else {
-					((ClassPathListModel)list.getModel()).insertElementAt(dropIndex, droppedEntries[0]);
-				}
-			} catch (Exception e) {
-				dropSucceeded = false;
-			}
-			return dropSucceeded;
-		}
-	};
-
 	public ClassPathPanel() {
 		init();
 	}
@@ -246,13 +171,13 @@ public class ClassPathPanel extends JPanel {
 	private void init() {
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-		this.classpathList = buildListComponent();
+		this.pathsList = buildListComponent();
 		this.classpathTextArea = buildTextComponent();
 		JPanel buttonPanel = buildButtonPanel();
 		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		splitPane.setDividerLocation(.8);
 		splitPane.setResizeWeight(.8);
-		JScrollPane listScrollPane = new JScrollPane(this.classpathList);
+		JScrollPane listScrollPane = new JScrollPane(this.pathsList);
 		splitPane.add(listScrollPane, JSplitPane.TOP);
 		JScrollPane textScrollPane = new JScrollPane(this.classpathTextArea);
 		splitPane.add(textScrollPane, JSplitPane.BOTTOM);
@@ -267,7 +192,7 @@ public class ClassPathPanel extends JPanel {
 		getAdapter().addListener(this.adapterListenerForList);
 		getAdapter().addListener(this.adapterListenerForTextArea);
 		getAdapter().addListener(this.adapterListenerForButtons);
-		this.classpathList
+		this.pathsList
 				.addListSelectionListener(this.listListenerForButtons);
 		this.classpathListModel
 				.addListDataListener(this.listDataListenerForAdapter);
@@ -280,7 +205,7 @@ public class ClassPathPanel extends JPanel {
 
 		result.add(Box.createVerticalGlue());
 
-		this.moveUpButton = new JButton(new MoveUpAction(this.classpathList,
+		this.moveUpButton = new JButton(new MoveUpAction(this.pathsList,
 				this.classpathListModel));
 		this.moveUpButton.setName("MOVE_UP");
 		this.moveUpButton.setMaximumSize(new Dimension(Integer.MAX_VALUE,
@@ -289,7 +214,7 @@ public class ClassPathPanel extends JPanel {
 		result.add(this.moveUpButton);
 
 		this.moveDownButton = new JButton(new MoveDownAction(
-				this.classpathList, this.classpathListModel));
+				this.pathsList, this.classpathListModel));
 		this.moveDownButton.setName("MOVE_DOWN");
 		this.moveDownButton.setMaximumSize(new Dimension(Integer.MAX_VALUE,
 				this.moveDownButton.getSize().height));
@@ -305,7 +230,7 @@ public class ClassPathPanel extends JPanel {
 		result.add(this.addButton);
 
 		this.removeButton = new JButton(new RemoveAnEntryAction(
-				this.classpathList, getAdapter()));
+				this.pathsList, getAdapter()));
 		this.removeButton.setName("REMOVE_ENTRY");
 		this.removeButton.setMaximumSize(new Dimension(Integer.MAX_VALUE,
 				this.removeButton.getSize().height));
@@ -348,33 +273,9 @@ public class ClassPathPanel extends JPanel {
 		return result;
 	}
 
-	private JList buildListComponent() {
+	private ClassPathList buildListComponent() {
 		this.classpathListModel = new ClassPathListModel();
-		JList result = new JList(this.classpathListModel);
-		result.setCellRenderer(new DefaultListCellRenderer() {
-
-			private final Color ODD_COLOR = new Color(0xEEEEFF);
-
-			public Component getListCellRendererComponent(JList list,
-					Object value, int index, boolean isSelected,
-					boolean cellHasFocus) {
-				Component result = super.getListCellRendererComponent(list,
-						value, index, isSelected, cellHasFocus);
-				if (!isSelected && index % 2 == 1) {
-					result.setBackground(this.ODD_COLOR);
-				}
-				return result;
-			}
-		});
-		// set Drag enable to false as it is related to swing DnD support
-		result.setDragEnabled(false);
-		DragSource dSource = new DragSource();
-		dSource.addDragSourceListener(this.listDragSourceListener);
-		dSource.createDefaultDragGestureRecognizer(result,
-				DnDConstants.ACTION_MOVE, this.listDragGestureListener);
-		DropTarget dt = new DropTarget(result, this.listDropTargetListener);
-		result.setDropTarget(dt);
-		return result;
+		return new ClassPathList(this.classpathListModel);
 	}
 
 	public ClassPathAdapter getAdapter() {
