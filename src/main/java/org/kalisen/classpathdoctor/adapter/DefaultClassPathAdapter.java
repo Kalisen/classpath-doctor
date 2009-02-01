@@ -25,7 +25,7 @@ public class DefaultClassPathAdapter extends AbstractAdapter implements
 		if (!this.currentClasspathAsText.equals(text)) {
 			this.currentClasspathAsText = text;
 			ClassPath newClasspath = this.parser.parse(text);
-			if (!this.currentClasspath.equalsIgnoreEmptyEntries(newClasspath)) {
+			if (!this.currentClasspath.equals(newClasspath)) {
 				this.currentClasspath = newClasspath;
 				getNotifier().setChanged();
 				getNotifier().notifyObservers(this.currentClasspath);
@@ -41,7 +41,7 @@ public class DefaultClassPathAdapter extends AbstractAdapter implements
 		if (cp == null) {
 			throw new IllegalArgumentException("null is not a valid argument");
 		}
-		if (!this.currentClasspath.equalsIgnoreEmptyEntries(cp)) {
+		if (!this.currentClasspath.equals(cp)) {
 			this.currentClasspath = cp;
 			this.currentClasspathAsText = cp.toString();
 			getNotifier().setChanged();

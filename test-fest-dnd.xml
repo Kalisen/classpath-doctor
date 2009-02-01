@@ -1,0 +1,12 @@
+<suite name="TestDnd" verbose="1">
+    <test name="Drag and Drop related FEST Tests">
+        <packages>
+            <package name="fest.*" />
+        </packages>
+		<groups>
+			<run>
+                <include name="DnD" />
+			</run>
+        </groups>
+    </test>
+</suite> 

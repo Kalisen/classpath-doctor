@@ -15,12 +15,15 @@ import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetListener;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListModel;
 
+import org.kalisen.classpathdoctor.EmptyPathEntry;
 import org.kalisen.classpathdoctor.PathEntry;
 import org.kalisen.classpathdoctor.gui.ClassPathPanel.PathEntriesTransferable;
 
@@ -49,6 +52,7 @@ public class ClassPathList extends JList {
 				int[] selectedIndices = list.getSelectedIndices();
 				((ClassPathListModel) list.getModel())
 						.removeElementAt(selectedIndices[0]);
+				list.repaint();
 			}
 		}
 	};
@@ -104,21 +108,8 @@ public class ClassPathList extends JList {
 	 */
 	public ClassPathList(ClassPathListModel dataModel) {
 		super(dataModel);
-		setCellRenderer(new DefaultListCellRenderer() {
+		setCellRenderer(new ClassPathListCellRenderer());
 
-			private final Color ODD_COLOR = new Color(0xEEEEFF);
-
-			public Component getListCellRendererComponent(JList list,
-					Object value, int index, boolean isSelected,
-					boolean cellHasFocus) {
-				Component result = super.getListCellRendererComponent(list,
-						value, index, isSelected, cellHasFocus);
-				if (!isSelected && index % 2 == 1) {
-					result.setBackground(this.ODD_COLOR);
-				}
-				return result;
-			}
-		});
 		// set Drag enable to false as it is related to swing DnD support
 		setDragEnabled(false);
 		DragSource dSource = new DragSource();
@@ -137,13 +128,13 @@ public class ClassPathList extends JList {
 	 * @param listData
 	 *            the array of Objects to be loaded into the data model
 	 */
-	public ClassPathList(final Object[] listData) {
+	public ClassPathList(final PathEntry[] listData) {
 		this(new ClassPathListModel() {
 			public int getSize() {
 				return listData.length;
 			}
 
-			public Object getElementAt(int i) {
+			public PathEntry getElementAt(int i) {
 				return listData[i];
 			}
 		});
@@ -157,13 +148,13 @@ public class ClassPathList extends JList {
 	 * @param listData
 	 *            the <code>Vector</code> to be loaded into the data model
 	 */
-	public ClassPathList(final Vector<?> listData) {
+	public ClassPathList(final Vector<PathEntry> listData) {
 		this(new ClassPathListModel() {
 			public int getSize() {
 				return listData.size();
 			}
 
-			public Object getElementAt(int i) {
+			public PathEntry getElementAt(int i) {
 				return listData.elementAt(i);
 			}
 		});
@@ -186,36 +177,107 @@ public class ClassPathList extends JList {
 		if (model instanceof ClassPathListModel) {
 			super.setModel(model);
 		} else {
-			throw new IllegalArgumentException("Excepted an instance of "
+			throw new IllegalArgumentException("Expected an instance of "
 					+ ClassPathListModel.class.getName() + " but was "
 					+ (model == null ? null : model.getClass().getName()));
 		}
 	}
 
 	@Override
-	public void setListData(final Object[] listData) {
+	public void setListData(Object[] listData) {
+		if (listData instanceof PathEntry[]) {
+			super.setListData(listData);
+		} else {
+			throw new IllegalArgumentException("Expected an instance of "
+					+ PathEntry[].class.getName() + " but was "
+					+ (listData == null ? null : listData.getClass().getName()));
+		}
+	}
+
+	public void setListData(final PathEntry[] listData) {
 		setModel(new ClassPathListModel() {
 			public int getSize() {
 				return listData.length;
 			}
 
-			public Object getElementAt(int i) {
+			public PathEntry getElementAt(int i) {
 				return listData[i];
 			}
 		});
 	}
 
-	@Override
 	public void setListData(final Vector<?> listData) {
+		for (Object object : listData) {
+			if (!(object instanceof PathEntry)) {
+				throw new IllegalArgumentException("Expected a Vector of "
+						+ PathEntry.class.getName()
+						+ " but contained instance of "
+						+ (object == null ? null : object.getClass().getName()));
+			}
+		}
 		setModel(new ClassPathListModel() {
 			public int getSize() {
 				return listData.size();
 			}
 
-			public Object getElementAt(int i) {
+			public PathEntry getElementAt(int i) {
+				return (PathEntry) listData.get(i);
+			}
+		});
+	}
+
+	public void setListData(final List<PathEntry> listData) {
+		setModel(new ClassPathListModel() {
+			public int getSize() {
+				return listData.size();
+			}
+
+			public PathEntry getElementAt(int i) {
 				return listData.get(i);
 			}
 		});
+	}
+
+	private class ClassPathListCellRenderer extends DefaultListCellRenderer {
+
+		private final Color EVEN_COLOR = Color.WHITE;
+		private final Color ODD_COLOR = new Color(0xEEEFFF);
+		private final Color NONEXIST_COLOR = new Color(0xFF0000);
+
+		public ClassPathListCellRenderer() {
+			super();
+		}
+
+		public Component getListCellRendererComponent(JList list, Object value,
+				int index, boolean isSelected, boolean cellHasFocus) {
+			ClassPathList cpList = (ClassPathList) list;
+			Component result = super.getListCellRendererComponent(list, value,
+					index, isSelected, cellHasFocus);
+			PathEntry entry = cpList.getModel().getElementAt(index);
+			setComponentBackground(entry, index, isSelected, result);
+			setComponentText(entry, result);
+			return result;
+		}
+		
+		protected void setComponentText(PathEntry entry, Component toBeModified) {
+			if (EmptyPathEntry.INSTANCE.equals(entry)) {
+				((JLabel) toBeModified).setText(" ");
+			}
+		}
+		
+		protected void setComponentBackground(PathEntry entry,
+				int index, boolean isSelected, Component toBeModified) {
+			if (entry.exists() || EmptyPathEntry.INSTANCE.equals(entry)) {
+				if (!isSelected && index % 2 == 1
+						&& !toBeModified.getBackground().equals(this.ODD_COLOR)) {
+					toBeModified.setBackground(this.ODD_COLOR);
+				} else if (!toBeModified.getBackground().equals(this.EVEN_COLOR)) {
+					//toBeModified.setBackground(this.EVEN_COLOR);
+				}
+			} else if (!isSelected && !entry.exists()) {
+				toBeModified.setBackground(this.NONEXIST_COLOR);
+			}
+		}
 	}
 
 }
