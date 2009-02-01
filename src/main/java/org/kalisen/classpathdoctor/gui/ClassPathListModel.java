@@ -32,7 +32,7 @@ public class ClassPathListModel extends AbstractListModel {
 		}
 	}
 
-	public Object getElementAt(int index) {
+	public PathEntry getElementAt(int index) {
 		return this.classPath.getEntries().get(index);
 	}
 
