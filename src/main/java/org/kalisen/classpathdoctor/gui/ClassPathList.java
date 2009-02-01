@@ -240,7 +240,6 @@ public class ClassPathList extends JList {
 
 	private class ClassPathListCellRenderer extends DefaultListCellRenderer {
 
-		private final Color EVEN_COLOR = Color.WHITE;
 		private final Color ODD_COLOR = new Color(0xEEEFFF);
 		private final Color NONEXIST_COLOR = new Color(0xFF0000);
 
@@ -271,8 +270,6 @@ public class ClassPathList extends JList {
 				if (!isSelected && index % 2 == 1
 						&& !toBeModified.getBackground().equals(this.ODD_COLOR)) {
 					toBeModified.setBackground(this.ODD_COLOR);
-				} else if (!toBeModified.getBackground().equals(this.EVEN_COLOR)) {
-					//toBeModified.setBackground(this.EVEN_COLOR);
 				}
 			} else if (!isSelected && !entry.exists()) {
 				toBeModified.setBackground(this.NONEXIST_COLOR);
