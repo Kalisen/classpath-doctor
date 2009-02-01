@@ -25,7 +25,7 @@ public class TestClassPathPanel {
 
 	private FrameFixture frame = null;
 
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	protected void setUp() {
 		this.frame = new FrameFixture(new ClassPathDoctorGUI());
 		this.frame.show();
@@ -49,6 +49,7 @@ public class TestClassPathPanel {
 		assertListEntryEquals(this.frame.list().item(0), ENTRY3);
 		assertListEntryEquals(this.frame.list().item(1), ENTRY1);
 		assertListEntryEquals(this.frame.list().item(2), ENTRY2);
+		this.frame.list().requireSelection(ENTRY3);
 	}
 
 	@Test(groups="DnD")
@@ -64,6 +65,7 @@ public class TestClassPathPanel {
 		assertListEntryEquals(this.frame.list().item(0), ENTRY3);
 		assertListEntryEquals(this.frame.list().item(1), ENTRY1);
 		assertListEntryEquals(this.frame.list().item(2), ENTRY2);
+		this.frame.list().requireSelection(ENTRY3);
 	}
 
 	@Test(groups="DnD")
@@ -79,6 +81,7 @@ public class TestClassPathPanel {
 		assertListEntryEquals(this.frame.list().item(0), ENTRY2);
 		assertListEntryEquals(this.frame.list().item(1), ENTRY3);
 		assertListEntryEquals(this.frame.list().item(2), ENTRY1);
+		this.frame.list().requireSelection(ENTRY1);
 	}
 	
 	public void testAddAnEntryButton() {
@@ -306,7 +309,7 @@ public class TestClassPathPanel {
 				expectedRelativePath).getAbsolutePath());
 	}
 
-	@AfterMethod
+	@AfterMethod(alwaysRun=true)
 	public void tearDown() {
 		this.frame.cleanUp();
 	}
