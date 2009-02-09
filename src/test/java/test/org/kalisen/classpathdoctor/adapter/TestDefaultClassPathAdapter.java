@@ -32,24 +32,34 @@ public class TestDefaultClassPathAdapter {
 				"The Observer should have been called");
 	}
 
-	public void setClassPathAsTextShouldNotTriggerAnEventIfTheOnlyDifferenceIsAnEmptyEntryAtTheEnd() {
-		MockObserver obs = new MockObserver(null, false);
+	public void setClassPathAsTextShouldTriggerAnEventIfTheOnlyDifferenceIsAnEmptyEntryAtTheEnd() {
+		final ClassPath expectedClasspath = new ClassPath();
+		expectedClasspath.addEntry(new DirectoryPath("."));
+		expectedClasspath.addEntry(EmptyPathEntry.INSTANCE);
+		MockObserver obs = new MockObserver(expectedClasspath);
 		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
 		adapter.setClassPathAsText(CURRENT_DIR);
 		adapter.addListener(obs);
 		adapter.setClassPathAsText(CURRENT_DIR + PATH_SEPARATOR);
 	}
 
-	public void setClassPathAsTextShouldNotTriggerAnEventIfTheOnlyDifferenceIsAnEmptyEntryAtTheBeginning() {
-		MockObserver obs = new MockObserver(null, false);
+	public void setClassPathAsTextShouldTriggerAnEventIfTheOnlyDifferenceIsAnEmptyEntryAtTheBeginning() {
+		final ClassPath expectedClasspath = new ClassPath();
+		expectedClasspath.addEntry(EmptyPathEntry.INSTANCE);
+		expectedClasspath.addEntry(new DirectoryPath("."));
+		MockObserver obs = new MockObserver(expectedClasspath);
 		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
 		adapter.setClassPathAsText(CURRENT_DIR);
 		adapter.addListener(obs);
 		adapter.setClassPathAsText(PATH_SEPARATOR + CURRENT_DIR);
 	}
 
-	public void setClassPathAsTextShouldNotTriggerAnEventIfTheOnlyDifferenceIsAnEmptyEntryInTheMiddle() {
-		MockObserver obs = new MockObserver(null, false);
+	public void setClassPathAsTextShouldTriggerAnEventIfTheOnlyDifferenceIsAnEmptyEntryInTheMiddle() {
+		final ClassPath expectedClasspath = new ClassPath();
+		expectedClasspath.addEntry(new DirectoryPath("."));
+		expectedClasspath.addEntry(EmptyPathEntry.INSTANCE);
+		expectedClasspath.addEntry(new DirectoryPath("."));
+		MockObserver obs = new MockObserver(expectedClasspath);
 		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
 		adapter.setClassPathAsText(CURRENT_DIR + PATH_SEPARATOR + "."
 				+ FILE_SEPARATOR);
@@ -148,44 +158,44 @@ public class TestDefaultClassPathAdapter {
 				"The Observer should have been called");
 	}
 
-	public void setClassPathShouldNotTriggerAnEventIfTheOnlyDifferenceIsAnEmptyEntryAtTheEnd() {
-		MockObserver obs = new MockObserver(null, false);
+	public void setClassPathShouldTriggerAnEventIfTheOnlyDifferenceIsAnEmptyEntryAtTheEnd() {
+		ClassPath newCP = new ClassPath();
+		newCP.addEntry(new DirectoryPath("."));
+		newCP.addEntry(EmptyPathEntry.INSTANCE);
+		MockObserver obs = new MockObserver(newCP);
 		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
 		ClassPath cp = new ClassPath();
 		cp.addEntry(new DirectoryPath("."));
 		adapter.setClassPath(cp);
 		adapter.addListener(obs);
-		ClassPath newCP = new ClassPath();
-		newCP.addEntry(new DirectoryPath("."));
-		newCP.addEntry(EmptyPathEntry.INSTANCE);
 		adapter.setClassPath(newCP);
 	}
 
-	public void setClassPathShouldNotTriggerAnEventIfTheOnlyDifferenceIsAnEmptyEntryAtTheBeginning() {
-		MockObserver obs = new MockObserver(null, false);
+	public void setClassPathShouldTriggerAnEventIfTheOnlyDifferenceIsAnEmptyEntryAtTheBeginning() {
+		ClassPath newCP = new ClassPath();
+		newCP.addEntry(EmptyPathEntry.INSTANCE);
+		newCP.addEntry(new DirectoryPath("."));
+		MockObserver obs = new MockObserver(newCP);
 		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
 		ClassPath cp = new ClassPath();
 		cp.addEntry(new DirectoryPath("."));
 		adapter.setClassPath(cp);
 		adapter.addListener(obs);
-		ClassPath newCP = new ClassPath();
-		newCP.addEntry(EmptyPathEntry.INSTANCE);
-		newCP.addEntry(new DirectoryPath("."));
 		adapter.setClassPath(newCP);
 	}
 
-	public void setClassPathShouldNotTriggerAnEventIfTheOnlyDifferenceIsAnEmptyEntryInTheMiddle() {
-		MockObserver obs = new MockObserver(null, false);
+	public void setClassPathShouldTriggerAnEventIfTheOnlyDifferenceIsAnEmptyEntryInTheMiddle() {
+		ClassPath newCP = new ClassPath();
+		newCP.addEntry(new DirectoryPath("."));
+		newCP.addEntry(EmptyPathEntry.INSTANCE);
+		newCP.addEntry(new DirectoryPath("."));
+		MockObserver obs = new MockObserver(newCP);
 		DefaultClassPathAdapter adapter = new DefaultClassPathAdapter();
 		ClassPath cp = new ClassPath();
 		cp.addEntry(new DirectoryPath("."));
 		cp.addEntry(new DirectoryPath("."));
 		adapter.setClassPath(cp);
 		adapter.addListener(obs);
-		ClassPath newCP = new ClassPath();
-		newCP.addEntry(new DirectoryPath("."));
-		newCP.addEntry(EmptyPathEntry.INSTANCE);
-		newCP.addEntry(new DirectoryPath("."));
 		adapter.setClassPath(newCP);
 	}
 

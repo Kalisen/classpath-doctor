@@ -6,7 +6,7 @@ public class EmptyPathEntry implements PathEntry, Serializable {
 
 	public static final EmptyPathEntry INSTANCE = new EmptyPathEntry();
 
-	private EmptyPathEntry() {
+	protected EmptyPathEntry() {
 		// private constructor for singleton pattern
 	}
 
