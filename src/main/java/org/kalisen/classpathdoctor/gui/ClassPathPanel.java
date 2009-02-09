@@ -2,10 +2,6 @@ package org.kalisen.classpathdoctor.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -28,9 +24,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 
-import org.fest.swing.util.Arrays;
 import org.kalisen.classpathdoctor.ClassPath;
-import org.kalisen.classpathdoctor.PathEntry;
 import org.kalisen.classpathdoctor.adapter.ClassPathAdapter;
 import org.kalisen.classpathdoctor.adapter.DefaultClassPathAdapter;
 import org.kalisen.classpathdoctor.gui.actions.AddAnEntryAction;
@@ -308,40 +302,6 @@ public class ClassPathPanel extends JPanel {
 			throw new IllegalArgumentException("null is not a valid argument");
 		}
 		this.errorHandler = handler;
-	}
-
-	public static class PathEntriesTransferable implements Transferable {
-		public static final DataFlavor PATHENTRIES_DATAFLAVOR = new DataFlavor(
-				PathEntry[].class, "Path Entries");
-		private static final DataFlavor[] FLAVORS = { PATHENTRIES_DATAFLAVOR };
-
-		private PathEntry[] entries = null;
-
-		public PathEntriesTransferable(PathEntry[] entries) {
-			if (entries == null) {
-				throw new IllegalArgumentException(
-						"null is not a valid argument");
-			}
-			this.entries = Arrays.copyOf(entries);
-		}
-
-		public Object getTransferData(DataFlavor flavor)
-				throws UnsupportedFlavorException, IOException {
-			if (!isDataFlavorSupported(flavor)) {
-				throw new UnsupportedFlavorException(flavor);
-			}
-			return this.entries;
-
-		}
-
-		public DataFlavor[] getTransferDataFlavors() {
-			return FLAVORS;
-		}
-
-		public boolean isDataFlavorSupported(DataFlavor flavor) {
-			return FLAVORS[0].equals(flavor);
-		}
-
 	}
 
 }

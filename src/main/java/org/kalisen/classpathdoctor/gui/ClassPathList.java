@@ -3,7 +3,9 @@ package org.kalisen.classpathdoctor.gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
@@ -15,6 +17,7 @@ import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetListener;
+import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
 
@@ -23,9 +26,9 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListModel;
 
+import org.fest.swing.util.Arrays;
 import org.kalisen.classpathdoctor.EmptyPathEntry;
 import org.kalisen.classpathdoctor.PathEntry;
-import org.kalisen.classpathdoctor.gui.ClassPathPanel.PathEntriesTransferable;
 
 public class ClassPathList extends JList {
 
@@ -275,6 +278,40 @@ public class ClassPathList extends JList {
 				toBeModified.setBackground(this.NONEXIST_COLOR);
 			}
 		}
+	}
+
+	public static class PathEntriesTransferable implements Transferable {
+		public static final DataFlavor PATHENTRIES_DATAFLAVOR = new DataFlavor(
+				PathEntry[].class, "Path Entries");
+		private static final DataFlavor[] FLAVORS = { PATHENTRIES_DATAFLAVOR };
+
+		private PathEntry[] entries = null;
+
+		public PathEntriesTransferable(PathEntry[] entries) {
+			if (entries == null) {
+				throw new IllegalArgumentException(
+						"null is not a valid argument");
+			}
+			this.entries = Arrays.copyOf(entries);
+		}
+
+		public Object getTransferData(DataFlavor flavor)
+				throws UnsupportedFlavorException, IOException {
+			if (!isDataFlavorSupported(flavor)) {
+				throw new UnsupportedFlavorException(flavor);
+			}
+			return this.entries;
+
+		}
+
+		public DataFlavor[] getTransferDataFlavors() {
+			return FLAVORS;
+		}
+
+		public boolean isDataFlavorSupported(DataFlavor flavor) {
+			return FLAVORS[0].equals(flavor);
+		}
+
 	}
 
 }
