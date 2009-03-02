@@ -115,6 +115,7 @@ public class ClassPathList extends JList {
 
 		// set Drag enable to false as it is related to swing DnD support
 		setDragEnabled(false);
+		System.setProperty("awt.dnd.drag.threshold", "1");
 		DragSource dSource = new DragSource();
 		dSource.addDragSourceListener(this.listDragSourceListener);
 		dSource.createDefaultDragGestureRecognizer(this,
@@ -260,15 +261,15 @@ public class ClassPathList extends JList {
 			setComponentText(entry, result);
 			return result;
 		}
-		
+
 		protected void setComponentText(PathEntry entry, Component toBeModified) {
 			if (EmptyPathEntry.INSTANCE.equals(entry)) {
 				((JLabel) toBeModified).setText(" ");
 			}
 		}
-		
-		protected void setComponentBackground(PathEntry entry,
-				int index, boolean isSelected, Component toBeModified) {
+
+		protected void setComponentBackground(PathEntry entry, int index,
+				boolean isSelected, Component toBeModified) {
 			if (entry.exists() || EmptyPathEntry.INSTANCE.equals(entry)) {
 				if (!isSelected && index % 2 == 1
 						&& !toBeModified.getBackground().equals(this.ODD_COLOR)) {
