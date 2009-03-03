@@ -6,11 +6,6 @@
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="lib" path="jars/testng-5.5-jdk15.jar" sourcepath="jars/testng-5.5-jdk15-src.zip"/>
 	<classpathentry kind="lib" path="jars/jmockit-0.94.jar"/>
-	<classpathentry kind="var" path="SWING_WORKER_HOME/swing-worker-1.2.jar" sourcepath="/SWING_WORKER_HOME/swing-worker-src-1.2.zip">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/home/kalisen/workspace/3rdparty/swing-worker/swing-worker-doc-1.2.zip!/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="jars/fest-swing-1.0.jar" sourcepath="jars/fest-swing-1.0-sources.jar"/>
 	<classpathentry kind="lib" path="jars/debug-1.0.jar"/>
 	<classpathentry kind="lib" path="jars/fest-assert-1.0.jar"/>

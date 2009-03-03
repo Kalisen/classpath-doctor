@@ -25,7 +25,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListModel;
 
-import org.fest.swing.util.Arrays;
 import org.kalisen.classpathdoctor.EmptyPathEntry;
 import org.kalisen.classpathdoctor.PathEntry;
 import org.kalisen.common.DefaultErrorHandler;
@@ -279,7 +278,8 @@ public class ClassPathList extends JList {
 				throw new IllegalArgumentException(
 						"null is not a valid argument");
 			}
-			this.entries = Arrays.copyOf(entries);
+			this.entries = new PathEntry[entries.length];
+			System.arraycopy(entries, 0, this.entries, 0, entries.length);
 		}
 
 		public Object getTransferData(DataFlavor flavor)
