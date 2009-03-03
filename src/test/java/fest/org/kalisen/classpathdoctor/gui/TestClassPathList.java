@@ -45,7 +45,7 @@ public class TestClassPathList {
 		assertListEntryEquals(this.frame.list().item(0), ENTRY3);
 		assertListEntryEquals(this.frame.list().item(1), ENTRY1);
 		assertListEntryEquals(this.frame.list().item(2), ENTRY2);
-		this.frame.list().requireSelection(ENTRY3);
+		this.frame.list().requireSelection(this.frame.list().item(0).value());
 	}
 
 	@Test(groups="DnD")
@@ -61,7 +61,7 @@ public class TestClassPathList {
 		assertListEntryEquals(this.frame.list().item(0), ENTRY3);
 		assertListEntryEquals(this.frame.list().item(1), ENTRY1);
 		assertListEntryEquals(this.frame.list().item(2), ENTRY2);
-		this.frame.list().requireSelection(ENTRY3);
+		this.frame.list().requireSelection(this.frame.list().item(0).value());
 	}
 
 	@Test(groups="DnD")
@@ -77,7 +77,7 @@ public class TestClassPathList {
 		assertListEntryEquals(this.frame.list().item(0), ENTRY2);
 		assertListEntryEquals(this.frame.list().item(1), ENTRY3);
 		assertListEntryEquals(this.frame.list().item(2), ENTRY1);
-		this.frame.list().requireSelection(ENTRY1);
+		this.frame.list().requireSelection(this.frame.list().item(2).value());
 	}
 	
 	protected void addEntry(String path) {
