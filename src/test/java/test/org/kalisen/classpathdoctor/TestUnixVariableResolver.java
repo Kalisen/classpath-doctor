@@ -5,6 +5,7 @@ import org.kalisen.classpathdoctor.UnixVariableResolver;
 
 public class TestUnixVariableResolver extends AbstractTestVariableResolver {
 
+	private static final String NON_EXISTING_VAR_REFERENCE = "${NON_EXISTING}";
 	private static final String VAR_REFERENCE = "${MY_VARIABLE}";
 	private static final String UNIX_PATH_SEPARATOR = ":";
 
@@ -16,6 +17,11 @@ public class TestUnixVariableResolver extends AbstractTestVariableResolver {
 	@Override
 	protected String getVariableReference() {
 		return VAR_REFERENCE;
+	}
+
+	@Override
+	protected String getNonExistingVariableReference() {
+		return NON_EXISTING_VAR_REFERENCE;
 	}
 
 	@Override

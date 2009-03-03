@@ -16,6 +16,15 @@ public abstract class AbstractTestVariableResolver {
 	protected static final String VAR_VALUE = "MY_VALUE";
 
 	@Test
+	public void resolveNonExistingVariable() {
+		AbstractVariableResolver r = getTestedVariableResolver();
+		Mockit.redefineMethods(Environment.class, MockEnvironment.class);
+		String nonExistingVariableRef = getNonExistingVariableReference(); 
+		String value = r.resolve(nonExistingVariableRef);
+		assertEquals(value, nonExistingVariableRef);
+	}
+
+	@Test
 	public void resolveVariable() {
 		AbstractVariableResolver r = getTestedVariableResolver();
 		Mockit.redefineMethods(Environment.class, MockEnvironment.class);
@@ -56,6 +65,8 @@ public abstract class AbstractTestVariableResolver {
 	}
 
 	protected abstract String getVariableReference();
+
+	protected abstract String getNonExistingVariableReference();
 
 	protected abstract String getPathSeparator();
 

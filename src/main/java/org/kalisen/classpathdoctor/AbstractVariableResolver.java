@@ -27,8 +27,11 @@ public abstract class AbstractVariableResolver implements VariableResolver {
 		String varValue = null;
 		while (m.find()) {
 			var = m.group();
-			varValue = resolve(getEnvironment().getValue(isolateVarName(var)));
-			result = path.replaceAll(Pattern.quote(var), varValue);
+			varValue = getEnvironment().getValue(isolateVarName(var));
+			if (varValue != null) {
+				varValue = resolve(varValue);
+				result = path.replaceAll(Pattern.quote(var), varValue);
+			}
 		}
 		return result;
 	}
