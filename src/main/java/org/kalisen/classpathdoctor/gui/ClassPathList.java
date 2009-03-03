@@ -16,7 +16,6 @@ import java.awt.dnd.DragSourceListener;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetListener;
 import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
@@ -29,21 +28,29 @@ import javax.swing.ListModel;
 import org.fest.swing.util.Arrays;
 import org.kalisen.classpathdoctor.EmptyPathEntry;
 import org.kalisen.classpathdoctor.PathEntry;
+import org.kalisen.common.DefaultErrorHandler;
+import org.kalisen.common.ErrorHandler;
 
 public class ClassPathList extends JList {
+
+	private ErrorHandler errorHandler = null;
 
 	private final DragGestureListener listDragGestureListener = new DragGestureListener() {
 
 		public void dragGestureRecognized(DragGestureEvent dge) {
 			JList list = (JList) dge.getComponent();
 			Object[] selection = list.getSelectedValues();
-			PathEntry[] selectedEntries = new PathEntry[selection.length];
-			System
-					.arraycopy(selection, 0, selectedEntries, 0,
-							selection.length);
-			PathEntriesTransferable transferable = new PathEntriesTransferable(
-					selectedEntries);
-			dge.startDrag(DragSource.DefaultMoveDrop, transferable);
+			if (selection.length < 2) {
+				PathEntry[] selectedEntries = new PathEntry[selection.length];
+				System.arraycopy(selection, 0, selectedEntries, 0,
+						selection.length);
+				PathEntriesTransferable transferable = new PathEntriesTransferable(
+						selectedEntries);
+				dge.startDrag(DragSource.DefaultMoveDrop, transferable);
+			} else {
+				getErrorHandler().handleError(
+						"Only one entry can be moved at a time");
+			}
 		}
 	};
 
@@ -55,53 +62,18 @@ public class ClassPathList extends JList {
 				int[] selectedIndices = list.getSelectedIndices();
 				((ClassPathListModel) list.getModel())
 						.removeElementAt(selectedIndices[0]);
+				list.setSelectedIndex(ClassPathList.this.listDropTargetListener
+						.getFirstDropIndex());
 				list.repaint();
 			}
 		}
 	};
 
-	private final DropTargetListener listDropTargetListener = new DropTargetAdapter() {
-
-		public void drop(DropTargetDropEvent dtde) {
-			boolean acceptDrop = dtde.isLocalTransfer()
-					&& dtde
-							.isDataFlavorSupported(PathEntriesTransferable.PATHENTRIES_DATAFLAVOR)
-					&& dtde.getDropAction() == DnDConstants.ACTION_MOVE;
-			if (acceptDrop) {
-				dtde.acceptDrop(DnDConstants.ACTION_MOVE);
-				dtde.dropComplete(doDrop(dtde));
-			} else {
-				dtde.rejectDrop();
-			}
-		}
-
-		public boolean doDrop(DropTargetDropEvent dtde) {
-			boolean dropSucceeded = true;
-			Transferable transferable = dtde.getTransferable();
-			PathEntry[] droppedEntries;
-			try {
-				droppedEntries = (PathEntry[]) transferable
-						.getTransferData(PathEntriesTransferable.PATHENTRIES_DATAFLAVOR);
-				Point dropLocation = dtde.getLocation();
-				JList list = (JList) dtde.getDropTargetContext().getComponent();
-				int dropIndex = list.locationToIndex(dropLocation);
-				if (list.getSelectedIndex() < dropIndex) {
-					((ClassPathListModel) list.getModel()).insertElementAt(
-							dropIndex + 1, droppedEntries[0]);
-				} else {
-					((ClassPathListModel) list.getModel()).insertElementAt(
-							dropIndex, droppedEntries[0]);
-				}
-			} catch (Exception e) {
-				dropSucceeded = false;
-			}
-			return dropSucceeded;
-		}
-	};
+	private final ClassPathListDropTargetListener listDropTargetListener = new ClassPathListDropTargetListener();
 
 	/**
 	 * Constructs a <code>ClassPathList</code> that displays the elements in the
-	 * specified, non-<code>null</code> model. All <code>JList</code>
+	 * specified, non-<code>null</code> model. All <code>ClassPathList</code>
 	 * constructors delegate to this one.
 	 * 
 	 * @param dataModel
@@ -242,6 +214,20 @@ public class ClassPathList extends JList {
 		});
 	}
 
+	public ErrorHandler getErrorHandler() {
+		if (this.errorHandler == null) {
+			this.errorHandler = new DefaultErrorHandler();
+		}
+		return this.errorHandler;
+	}
+
+	public void setErrorHandler(ErrorHandler errorHandler) {
+		if (errorHandler == null) {
+			throw new IllegalArgumentException("null is not a valid argument");
+		}
+		this.errorHandler = errorHandler;
+	}
+
 	private class ClassPathListCellRenderer extends DefaultListCellRenderer {
 
 		private final Color ODD_COLOR = new Color(0xEEEFFF);
@@ -315,4 +301,49 @@ public class ClassPathList extends JList {
 
 	}
 
+	private class ClassPathListDropTargetListener extends DropTargetAdapter {
+
+		private int firstDropIndex = -1;
+
+		public void drop(DropTargetDropEvent dtde) {
+			boolean acceptDrop = dtde.isLocalTransfer()
+					&& dtde
+							.isDataFlavorSupported(PathEntriesTransferable.PATHENTRIES_DATAFLAVOR)
+					&& dtde.getDropAction() == DnDConstants.ACTION_MOVE;
+			if (acceptDrop) {
+				dtde.acceptDrop(DnDConstants.ACTION_MOVE);
+				dtde.dropComplete(doDrop(dtde));
+			} else {
+				dtde.rejectDrop();
+			}
+		}
+
+		public boolean doDrop(DropTargetDropEvent dtde) {
+			boolean dropSucceeded = true;
+			Transferable transferable = dtde.getTransferable();
+			PathEntry[] droppedEntries;
+			try {
+				droppedEntries = (PathEntry[]) transferable
+						.getTransferData(PathEntriesTransferable.PATHENTRIES_DATAFLAVOR);
+				Point dropLocation = dtde.getLocation();
+				JList list = (JList) dtde.getDropTargetContext().getComponent();
+				this.firstDropIndex = list.locationToIndex(dropLocation);
+				if (list.getSelectedIndex() < this.firstDropIndex) {
+					((ClassPathListModel) list.getModel()).insertElementAt(
+							this.firstDropIndex + 1, droppedEntries[0]);
+				} else {
+					((ClassPathListModel) list.getModel()).insertElementAt(
+							this.firstDropIndex, droppedEntries[0]);
+				}
+			} catch (Exception e) {
+				dropSucceeded = false;
+			}
+			return dropSucceeded;
+		}
+
+		public int getFirstDropIndex() {
+			return this.firstDropIndex;
+		}
+
+	}
 }
