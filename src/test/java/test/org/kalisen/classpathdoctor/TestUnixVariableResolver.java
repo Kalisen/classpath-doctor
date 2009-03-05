@@ -29,4 +29,9 @@ public class TestUnixVariableResolver extends AbstractTestVariableResolver {
 		return new UnixVariableResolver();
 	}
 
+	@Override
+	protected String getVariableValueWithSeparator() {
+		return "path/value/with/separator";
+	}
+
 }

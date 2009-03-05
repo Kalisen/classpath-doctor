@@ -29,4 +29,9 @@ public class TestWindowsVariableResolver extends AbstractTestVariableResolver {
 		return new WindowsVariableResolver();
 	}
 
+	@Override
+	protected String getVariableValueWithSeparator() {
+		return "path\\value\\with\\separator";
+	}
+	
 }

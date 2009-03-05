@@ -16,6 +16,18 @@ public abstract class AbstractTestVariableResolver {
 	protected static final String VAR_VALUE = "MY_VALUE";
 
 	@Test
+	public void aVariableValueCanContainFileSeparator() {
+		AbstractVariableResolver r = getTestedVariableResolver();
+		MockEnvironment mock = new MockEnvironment();
+		mock.varValue = getVariableValueWithSeparator();
+		Mockit.redefineMethods(Environment.class, mock);
+		String value = r.resolve(getVariableReference());
+		assertEquals(value, getVariableValueWithSeparator());
+	}
+
+	protected abstract String getVariableValueWithSeparator();
+
+	@Test
 	public void resolveNonExistingVariable() {
 		AbstractVariableResolver r = getTestedVariableResolver();
 		Mockit.redefineMethods(Environment.class, MockEnvironment.class);
@@ -71,9 +83,16 @@ public abstract class AbstractTestVariableResolver {
 	protected abstract String getPathSeparator();
 
 	public static class MockEnvironment {
+		
+		public String varValue = null;
+		
+		public MockEnvironment() {
+			this.varValue = AbstractTestVariableResolver.VAR_VALUE;
+		}
+		
 		public String getValue(String variable) {
 			if (VAR_NAME.equals(variable)) {
-				return AbstractTestVariableResolver.VAR_VALUE;
+				return this.varValue;
 			}
 			return null;
 		}

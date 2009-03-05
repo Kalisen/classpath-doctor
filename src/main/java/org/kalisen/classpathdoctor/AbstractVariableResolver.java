@@ -22,12 +22,12 @@ public abstract class AbstractVariableResolver implements VariableResolver {
 		Matcher m = p.matcher(path);
 		String var = null;
 		String varValue = null;
-		while (m.find()) {
+ 		while (m.find()) {
 			var = m.group();
 			varValue = getEnvironment().getValue(isolateVarName(var));
 			if (varValue != null) {
 				varValue = resolve(varValue);
-				result = path.replaceAll(Pattern.quote(var), varValue);
+				result = path.replaceAll(Pattern.quote(var), Matcher.quoteReplacement(varValue));
 			}
 		}
 		return result;
